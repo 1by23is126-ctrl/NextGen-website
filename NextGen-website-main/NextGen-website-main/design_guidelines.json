@@ -1,0 +1,142 @@
+{
+  "project_name": "NextGen Interiors",
+  "theme": "light",
+  "archetype": "Archetype 5: Luxury (with Archetype 1 Organic & Earthy influences)",
+  "emotional_tone": "Premium quality, trust, luxury, craftsmanship, attention to detail, professionalism, design excellence.",
+  "colors": {
+    "primary": "#0B0B0D",
+    "primary_description": "Obsidian Black - Used for high-impact contrasting sections, footer, and elegant typography.",
+    "secondary": "#1B1D22",
+    "secondary_description": "Graphite - Used for subtle dark card backgrounds or secondary dark sections.",
+    "background": "#F7F5F2",
+    "background_description": "Warm Ivory - The dominant base background. Creates an organic, airy, editorial feel.",
+    "surface": "#E6E0D8",
+    "surface_description": "Stone - Used for light card backgrounds, borders, or alternating sections.",
+    "accent_primary": "#C9A86A",
+    "accent_primary_description": "Champagne Gold - Used sparingly for key call-to-actions, fine architectural lines, and hover states.",
+    "accent_secondary": "#6D4C41",
+    "accent_secondary_description": "Walnut Brown - Used for textural depth, typography accents, and organic warmth.",
+    "success": "#7A9070",
+    "success_description": "Sage Green - Used for success states in the consultation form and organic accents.",
+    "text_dark": "#0B0B0D",
+    "text_light": "#F7F5F2",
+    "border_light": "rgba(11, 11, 13, 0.1)",
+    "border_dark": "rgba(247, 245, 242, 0.15)"
+  },
+  "typography": {
+    "heading_font": "Playfair Display",
+    "heading_fallback": "Cormorant Garamond, serif",
+    "body_font": "Manrope",
+    "body_fallback": "Outfit, sans-serif",
+    "rules": {
+      "h1": "text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter leading-tight",
+      "h2": "text-3xl md:text-4xl lg:text-5xl font-light tracking-tight leading-snug",
+      "h3": "text-2xl md:text-3xl font-medium tracking-tight",
+      "body": "text-base md:text-lg leading-relaxed text-opacity-80",
+      "overline": "text-xs font-bold uppercase tracking-[0.2em] text-[#C9A86A]"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Editorial, magazine-like layouts. Heavy reliance on negative space and asymmetrical grids to convey luxury.",
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_spacing": "py-24 md:py-32 lg:py-40",
+    "grid_modes": {
+      "portfolio": "Bento 'Tetris' Grid: grid-cols-1 md:grid-cols-12 gap-8 to gap-12 with varied row spans for an asymmetrical, curated gallery look."
+    },
+    "borders": "Fine 1px solid lines (#E6E0D8 or rgba(11,11,13,0.1)) used structurally to mimic architectural blueprints."
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#0B0B0D] text-[#F7F5F2] hover:bg-[#1B1D22] transition-colors duration-300 px-8 py-4 text-sm tracking-wide uppercase",
+      "secondary": "border border-[#0B0B0D] text-[#0B0B0D] hover:bg-[#0B0B0D] hover:text-[#F7F5F2] transition-all duration-300 px-8 py-4 text-sm tracking-wide uppercase",
+      "accent": "bg-[#C9A86A] text-[#0B0B0D] hover:bg-[#b5955a] transition-colors duration-300 px-8 py-4 font-medium text-sm tracking-wide uppercase"
+    },
+    "cards": {
+      "style": "Flat, zero border-radius (or absolute max 2px). No heavy drop shadows. Rely on 1px borders and high-quality imagery."
+    },
+    "forms": {
+      "inputs": "bg-transparent border-b border-[#0B0B0D]/20 focus:border-[#C9A86A] outline-none py-3 text-lg transition-colors rounded-none w-full",
+      "labels": "text-sm text-[#1B1D22] opacity-70 mb-2 block"
+    },
+    "navigation": {
+      "style": "Glassmorphism avoided for luxury. Use solid or semi-solid bg-white/90 backdrop-blur-md with fine bottom border. Sticky top z-50."
+    }
+  },
+  "animations": {
+    "scrolling": "Lenis smooth scrolling mandatory for a premium 'heavy' momentum feel.",
+    "transitions": "Framer motion for subtle fade-up (y: 20, opacity: 0 to 1) and slow image scales (1.1 to 1.0) on scroll.",
+    "hover_effects": "Image zoom on hover (overflow-hidden wrapper, scale-105 on image), text underline reveal for links.",
+    "parallax": "Use scroll-triggered parallax for large hero images and overlapping architectural elements."
+  },
+  "media": {
+    "hero_home": [
+      {
+        "url": "https://images.pexels.com/photos/20418771/pexels-photo-20418771.jpeg",
+        "description": "Lavish modern living area, perfect for the main home hero background.",
+        "category": "hero"
+      }
+    ],
+    "portfolio_residential": [
+      {
+        "url": "https://images.pexels.com/photos/13201479/pexels-photo-13201479.jpeg",
+        "description": "Stylish modern residential living room.",
+        "category": "portfolio"
+      },
+      {
+        "url": "https://images.pexels.com/photos/34538288/pexels-photo-34538288.jpeg",
+        "description": "Elegant minimalist living room.",
+        "category": "portfolio"
+      }
+    ],
+    "portfolio_commercial": [
+      {
+        "url": "https://images.pexels.com/photos/13219418/pexels-photo-13219418.jpeg",
+        "description": "Illuminated office inside modern glass building.",
+        "category": "portfolio"
+      },
+      {
+        "url": "https://images.pexels.com/photos/36631701/pexels-photo-36631701.jpeg",
+        "description": "Spacious open office area.",
+        "category": "portfolio"
+      }
+    ],
+    "portfolio_kitchen": [
+      {
+        "url": "https://images.pexels.com/photos/7515855/pexels-photo-7515855.png",
+        "description": "Sleek modular kitchen.",
+        "category": "portfolio"
+      },
+      {
+        "url": "https://images.pexels.com/photos/7148841/pexels-photo-7148841.jpeg",
+        "description": "Elegant modern kitchen.",
+        "category": "portfolio"
+      }
+    ],
+    "textures": [
+      {
+        "url": "https://images.unsplash.com/photo-1579621769016-b21ad5e853b0",
+        "description": "Stone/brick architectural texture for background accents.",
+        "category": "background"
+      }
+    ]
+  },
+  "pages": {
+    "Home": "Cinematic hero (Obsidian Black text over light ivory or full image overlay max bg-black/40). Featured projects using asymmetrical grid. Service overview. Testimonials slider. Magazine-style layout.",
+    "Portfolio": "Filterable gallery. 'Tetris' grid layout. Large images, generous spacing.",
+    "Services": "Detailed service pages. Alternating text/image blocks. High reliance on large typography and Stone (#E6E0D8) background blocks.",
+    "Consultation": "Multi-step animated form using Framer Motion. Progress indicator. Clean, minimal, distraction-free.",
+    "Admin": "Dashboard using Shadcn UI. Strictly functional, Obsidian Black sidebar, Warm Ivory main area."
+  },
+  "instructions_to_main_agent": [
+    "Install and use `lenis` for smooth scrolling.",
+    "Install and use `framer-motion` for page transitions, fade-ins, and scroll parallax.",
+    "Install `lucide-react` for minimal, elegant icons.",
+    "Install `@fontsource/playfair-display` and `@fontsource/manrope`.",
+    "Use Tailwind CSS for all styling. Never use raw CSS unless absolutely necessary.",
+    "For the multi-step form, use React state + framer-motion to slide between steps.",
+    "DO NOT use generic Shadcn cards for marketing pages. Build custom HTML/Tailwind structures with 0px border radius and fine 1px borders.",
+    "Use Shadcn UI strictly for the Admin panel and complex form elements (like Select, Dialog).",
+    "Ensure all interactive elements have `data-testid` attributes (e.g., `data-testid=\"consultation-submit-btn\"`).",
+    "The Hero overlay should never be fully black. Use `bg-black/30` or `bg-white/20` gradient overlays to keep the luxury image visible."
+  ]
+}

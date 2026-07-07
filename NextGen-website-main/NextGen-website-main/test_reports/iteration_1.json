@@ -1,0 +1,45 @@
+{
+  "summary": "First test run after MVP build. Backend: 27/27 pytest tests passed (health, stats, projects, blog, leads public + admin CRUD, auth with bearer/cookie). Frontend: home/portfolio/services/journal/404 render with all required data-testids; contact form + multi-step consultation submit successfully and show success toasts; admin login flow (wrong creds error, valid creds redirect, leads filtering+status update+delete, blog create) all work. Minor: project detail data-testids (project-overview etc.) are not present; admin logout URL changes but admin-login-page element doesn't immediately mount in same tick.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ProjectDetailPage", "issue": "Required data-testids (project-overview, project-challenge, project-concept, project-materials, project-timeline, project-testimonial, project-next-nav) missing on /portfolio/{slug}. Page content renders but selectors from spec are not present.", "selector": "[data-testid='project-overview']", "priority": "MEDIUM"},
+      {"component": "AdminLayout/AdminLogin", "issue": "After clicking [data-testid='admin-logout'] URL changes to /admin/login but admin-login-page element is not immediately visible (admin layout still painted briefly). Likely AuthContext token cleared but component remount race; UI updates after small delay.", "selector": "[data-testid='admin-login-page']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Console", "issues": ["Multiple 401s logged from /api/auth/me polling on public pages — expected for unauthenticated visitors but noisy in DevTools. Consider suppressing the error for the initial bootstrap check."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_nextgen_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Add data-testid attributes on ProjectDetailPage sections (project-overview, project-challenge, project-concept, project-materials, project-timeline, project-testimonial, project-next-nav) so portfolio case-study sections are automatable.",
+    "Tighten admin logout: clear ngi_token in AuthContext and force unmount before navigate so /admin/login renders immediately after click.",
+    "Silence the /api/auth/me 401 (no-token bootstrap) — fetch only when a token is present in localStorage, or downgrade to debug log."
+  ],
+  "critical_code_review_comments": [
+    "server.py is a single 595-line file mixing models, routes, seeders — fine for MVP but consider splitting into routers/models/seed modules as it grows.",
+    "POST /api/leads returns 200 instead of 201 (FastAPI default); not breaking but inconsistent with REST norms.",
+    "verify_password swallows all exceptions returning False — fine, but consider logging unexpected errors.",
+    "CORS_ORIGINS defaults to '*' AND allow_credentials=True — browsers will reject this combo for credentialed requests in strict mode. The frontend currently works because the preview origin matches the wildcard via Starlette's relaxed handling, but production should set explicit origins.",
+    "Lead model uses string ISO datetimes; consider using datetime with proper JSON serialization for consistency.",
+    "PATCH /api/leads/{id} accepts raw dict — should use a Pydantic LeadStatusUpdate model for validation."
+  ],
+  "updated_files": [
+    "/app/backend/tests/__init__.py",
+    "/app/backend/tests/test_nextgen_api.py"
+  ],
+  "success_rate": {"backend": "100% (27/27)", "frontend": "90% (admin logout UI sync + project detail testids are the only gaps)"},
+  "test_credentials": "admin@nextgeninteriors.in / NextGen@2025 (works via /api/auth/login)",
+  "seed_data_creation": "Backend auto-seeds admin user, 6 projects, 5 blog posts on startup. Test created and deleted a TEST_UI Article blog post and TEST_AdminCrudLead lead during run.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend is solid; all 27 pytest cases pass against the public preview URL. Public-create lead works without auth, admin endpoints require Bearer token. Frontend e2e covered: home, portfolio (filter+detail), services (10 cards + detail), journal (5 posts + detail), 404, contact, consultation multi-step, admin login (wrong + correct), admin leads list/filter/status/delete, admin blog create, admin logout. Open items: add data-testids on ProjectDetailPage; harden admin logout UI sync.",
+  "rca of the issue": "Project detail testids missing: ProjectDetailPage.jsx likely uses different testid names or none at all on its sections. Reproduction: open /portfolio/obsidian-villa-bengaluru, evaluate document.querySelectorAll('[data-testid^=project-]') — none of the spec'd ids exist. Mitigation: add data-testid='project-overview' etc. to the corresponding section wrappers in /app/frontend/src/pages/ProjectDetailPage.jsx. Admin logout sync: after logout click, ngi_token removal in AuthContext is async vs the navigate('/admin/login') call; the page re-renders the AdminLayout once before unmounting. Mitigation: setUser(null) synchronously before navigate(), or use replace navigate."
+}

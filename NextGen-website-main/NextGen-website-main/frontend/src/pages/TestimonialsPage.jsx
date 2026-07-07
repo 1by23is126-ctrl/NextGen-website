@@ -1,0 +1,44 @@
+import { Quote } from "lucide-react";
+import { FadeIn } from "@/components/site/Motion";
+
+const TESTIMONIALS = [
+  { quote: "They listened more than they spoke. The result is a home that feels like us — only more composed.", author: "Aarav & Ishita Menon", role: "Homeowners · Bengaluru", project: "Obsidian Villa" },
+  { quote: "Every evening the apartment seems to exhale. That is the design.", author: "Karan Shroff", role: "Homeowner · Mumbai", project: "Linden Apartment" },
+  { quote: "Our team writes better proposals here. That is not a metaphor.", author: "Studio Principal", role: "Atelier · Pune", project: "Atelier Office" },
+  { quote: "The room does half the hospitality for us.", author: "Founders, Terra", role: "Restaurant · Goa", project: "Terra Goa" },
+  { quote: "I cook more. That is the highest compliment I can give.", author: "Meera Kapoor", role: "Homeowner · Delhi", project: "Ivory Kitchen" },
+  { quote: "I sleep differently here.", author: "Resident", role: "Homeowner · Hyderabad", project: "Noir Bedroom" },
+];
+
+export default function TestimonialsPage() {
+  return (
+    <div data-testid="testimonials-page" className="pt-28">
+      <section className="ngi-container py-16 md:py-24">
+        <FadeIn>
+          <div className="ngi-overline mb-6"><span className="ngi-rule" />Said about the studio</div>
+          <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-4xl">
+            From the people we have <em className="text-[#6D4C41]">worked for</em>.
+          </h1>
+        </FadeIn>
+      </section>
+
+      <section className="ngi-container pb-24 md:pb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+          {TESTIMONIALS.map((t, i) => (
+            <FadeIn key={i} delay={(i % 2) * 0.05} className={`border-t border-[#0B0B0D]/15 pt-8 ${i % 2 === 1 ? "md:mt-24" : ""}`}>
+              <Quote size={32} className="text-[#C9A86A] mb-6" strokeWidth={1} />
+              <p className="font-serif text-2xl md:text-3xl font-light leading-snug text-[#0B0B0D]">"{t.quote}"</p>
+              <div className="mt-8 flex items-end justify-between">
+                <div>
+                  <div className="text-[11px] tracking-[0.22em] uppercase text-[#6D4C41]">{t.author}</div>
+                  <div className="text-xs text-[#1B1D22]/60 mt-1">{t.role}</div>
+                </div>
+                <div className="text-[10px] tracking-[0.22em] uppercase text-[#1B1D22]/50">{t.project}</div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
