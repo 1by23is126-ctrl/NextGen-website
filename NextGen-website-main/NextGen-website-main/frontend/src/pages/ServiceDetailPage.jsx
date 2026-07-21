@@ -33,7 +33,7 @@ export default function ServiceDetailPage() {
   return (
     <div data-testid="service-detail-page" className="pt-28">
       <section className="ngi-container pt-8 pb-12">
-        <Link to="/services" className="text-[10px] tracking-[0.22em] uppercase text-[#6D4C41] ngi-link-underline">← All services</Link>
+        <Link to="/services" className="text-[10px] tracking-[0.22em] uppercase text-[#707070] ngi-link-underline">← All services</Link>
       </section>
 
       <section className="ngi-container grid grid-cols-1 md:grid-cols-12 gap-10 items-end mb-16">
@@ -42,7 +42,7 @@ export default function ServiceDetailPage() {
           <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02]">{service.title}</h1>
         </FadeIn>
         <FadeIn className="md:col-span-4 md:col-start-9" delay={0.1}>
-          <p className="text-base md:text-lg leading-relaxed text-[#1B1D22]/85">{service.short}</p>
+          <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/85">{service.short}</p>
         </FadeIn>
       </section>
 
@@ -60,19 +60,19 @@ export default function ServiceDetailPage() {
           <h2 className="font-serif text-3xl md:text-4xl font-light leading-tight">What you get when you work with us on this.</h2>
         </FadeIn>
         <FadeIn className="md:col-span-6 md:col-start-7" delay={0.1}>
-          <p className="text-base md:text-lg leading-relaxed text-[#1B1D22]/80">{service.overview}</p>
+          <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/80">{service.overview}</p>
           <ul className="mt-10 space-y-4">
             {service.benefits.map((b, i) => (
-              <li key={i} className="flex gap-4 border-t border-[#0B0B0D]/10 pt-4">
-                <span className="text-[#C9A86A] font-serif text-xl">0{i + 1}</span>
-                <span className="text-[#1B1D22]/85">{b}</span>
+              <li key={i} className="flex gap-4 border-t border-[#171717]/10 pt-4">
+                <span className="text-[#C8A46A] font-serif text-xl">0{i + 1}</span>
+                <span className="text-[#1E1E1E]/85">{b}</span>
               </li>
             ))}
           </ul>
         </FadeIn>
       </section>
 
-      <section className="bg-[#E6E0D8]/40">
+      <section className="bg-[#E7E2DA]/40">
         <div className="ngi-container ngi-section">
           <FadeIn className="mb-12">
             <div className="ngi-overline mb-4"><span className="ngi-rule" />Process</div>
@@ -80,8 +80,8 @@ export default function ServiceDetailPage() {
           </FadeIn>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {service.process.map((p, i) => (
-              <FadeIn key={p} delay={i * 0.04} className="border-t border-[#0B0B0D]/20 pt-4">
-                <div className="text-[10px] tracking-[0.22em] uppercase text-[#6D4C41]">Step {String(i + 1).padStart(2, "0")}</div>
+              <FadeIn key={p} delay={i * 0.04} className="border-t border-[#171717]/20 pt-4">
+                <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Step {String(i + 1).padStart(2, "0")}</div>
                 <div className="font-serif text-xl md:text-2xl mt-2">{p}</div>
               </FadeIn>
             ))}
@@ -96,30 +96,28 @@ export default function ServiceDetailPage() {
             <h2 className="font-serif text-4xl md:text-5xl font-light">Questions about this service.</h2>
           </div>
         </FadeIn>
-        <div className="max-w-3xl border-t border-[#0B0B0D]/15">
+        <div className="max-w-3xl border-t border-[#171717]/15">
           {service.faqs.map((f, i) => (
-            <div key={i} className="border-b border-[#0B0B0D]/15">
+            <div key={i} className="border-b border-[#171717]/15">
               <button
                 onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
                 data-testid={`service-faq-${i}`}
                 className="w-full flex items-center justify-between py-6 text-left"
               >
                 <h3 className="font-serif text-xl md:text-2xl font-light pr-8">{f.q}</h3>
-                {openFaq === i ? <Minus size={20} className="text-[#C9A86A]" /> : <Plus size={20} className="text-[#C9A86A]" />}
+                {openFaq === i ? <Minus size={20} className="text-[#C8A46A]" /> : <Plus size={20} className="text-[#C8A46A]" />}
               </button>
-              <AnimatePresence>
-                {openFaq === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="pb-6 text-[#1B1D22]/80 leading-relaxed">{f.a}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div
+                className="grid transition-all duration-300 ease-in-out"
+                style={{
+                  gridTemplateRows: openFaq === i ? "1fr" : "0fr",
+                  opacity: openFaq === i ? 1 : 0,
+                }}
+              >
+                <div className="overflow-hidden">
+                  <p className="pb-6 text-[#1E1E1E]/80 leading-relaxed">{f.a}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -138,7 +136,7 @@ export default function ServiceDetailPage() {
                   <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <h3 className="mt-5 font-serif text-2xl">{p.title}</h3>
-                <div className="text-[10px] tracking-[0.22em] uppercase text-[#6D4C41] mt-2">{p.category} · {p.location}</div>
+                <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070] mt-2">{p.category} · {p.location}</div>
               </Link>
             ))}
           </div>
@@ -146,19 +144,19 @@ export default function ServiceDetailPage() {
       )}
 
       <section className="ngi-section ngi-container">
-        <Link to={`/services/${next.slug}`} className="group block border-t border-[#0B0B0D]/15 pt-10">
-          <div className="ngi-overline mb-4 text-[#6D4C41]"><span className="ngi-rule" />Next service</div>
+        <Link to={`/services/${next.slug}`} className="group block border-t border-[#171717]/15 pt-10">
+          <div className="ngi-overline mb-4 text-[#707070]"><span className="ngi-rule" />Next service</div>
           <div className="flex items-end justify-between">
-            <h3 className="font-serif text-4xl md:text-6xl font-light group-hover:text-[#6D4C41] transition-colors">{next.title}</h3>
-            <ArrowUpRight size={28} className="group-hover:text-[#C9A86A] transition-colors" />
+            <h3 className="font-serif text-4xl md:text-6xl font-light group-hover:text-[#707070] transition-colors">{next.title}</h3>
+            <ArrowUpRight size={28} className="group-hover:text-[#C8A46A] transition-colors" />
           </div>
         </Link>
       </section>
 
       <section className="ngi-section ngi-container">
-        <div className="bg-[#0B0B0D] text-[#F7F5F2] p-12 md:p-20 ngi-grain">
+        <div className="bg-[#171717] text-white p-12 md:p-20 ngi-grain">
           <h2 className="font-serif text-3xl md:text-5xl font-light max-w-2xl">Have a brief? Let's talk it through.</h2>
-          <Link to="/consultation" className="inline-flex mt-8 bg-[#C9A86A] text-[#0B0B0D] hover:bg-[#F7F5F2] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
+          <Link to="/consultation" className="inline-flex mt-8 bg-[#C8A46A] text-white hover:bg-[#D6B27A] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
             Book Consultation →
           </Link>
         </div>

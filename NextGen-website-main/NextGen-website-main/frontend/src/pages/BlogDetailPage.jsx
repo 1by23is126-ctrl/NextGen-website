@@ -18,7 +18,7 @@ export default function BlogDetailPage() {
   if (!post) {
     return (
       <div className="ngi-container pt-40 pb-24" data-testid="blog-loading">
-        <p className="text-[#1B1D22]/60">Loading article…</p>
+        <p className="text-[#1E1E1E]/60">Loading article…</p>
       </div>
     );
   }
@@ -26,11 +26,11 @@ export default function BlogDetailPage() {
   return (
     <article data-testid="blog-detail-page" className="pt-28">
       <header className="ngi-container pt-8 pb-12">
-        <Link to="/journal" className="text-[10px] tracking-[0.22em] uppercase text-[#6D4C41] ngi-link-underline">← Journal</Link>
+        <Link to="/journal" className="text-[10px] tracking-[0.22em] uppercase text-[#707070] ngi-link-underline">← Journal</Link>
         <FadeIn className="mt-8 max-w-4xl">
           <div className="ngi-overline mb-6"><span className="ngi-rule" />{post.category} · {post.read_time} min read</div>
           <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter leading-[1.02]">{post.title}</h1>
-          <div className="mt-8 text-[11px] tracking-[0.22em] uppercase text-[#1B1D22]/60">By {post.author}</div>
+          <div className="mt-8 text-[11px] tracking-[0.22em] uppercase text-[#1E1E1E]/60">By {post.author}</div>
         </FadeIn>
       </header>
 
@@ -44,19 +44,19 @@ export default function BlogDetailPage() {
 
       <section className="ngi-container py-20 md:py-28">
         <FadeIn className="max-w-2xl mx-auto">
-          <div className="prose prose-lg max-w-none font-serif text-xl md:text-2xl font-light leading-relaxed text-[#0B0B0D]">
+          <div className="prose prose-lg max-w-none font-serif text-xl md:text-2xl font-light leading-relaxed text-[#171717]">
             {post.content.split("\n\n").map((para, i) => {
               if (para.startsWith("**") && para.endsWith("**")) {
-                return <p key={i} className="font-sans text-base tracking-wider uppercase text-[#6D4C41] my-8 not-italic" style={{ fontStyle: "normal" }}>{para.replaceAll("*", "")}</p>;
+                return <p key={i} className="font-sans text-base tracking-wider uppercase text-[#707070] my-8 not-italic" style={{ fontStyle: "normal" }}>{para.replaceAll("*", "")}</p>;
               }
-              return <p key={i} className="mb-8" dangerouslySetInnerHTML={{ __html: para.replaceAll(/\*\*(.*?)\*\*/g, '<strong class="text-[#6D4C41] font-medium">$1</strong>') }} />;
+              return <p key={i} className="mb-8" dangerouslySetInnerHTML={{ __html: para.replaceAll(/\*\*(.*?)\*\*/g, '<strong class="text-[#707070] font-medium">$1</strong>') }} />;
             })}
           </div>
         </FadeIn>
       </section>
 
       {related.length > 0 && (
-        <section className="bg-[#E6E0D8]/40">
+        <section className="bg-[#E7E2DA]/40">
           <div className="ngi-container ngi-section">
             <FadeIn className="mb-10">
               <div className="ngi-overline mb-4"><span className="ngi-rule" />Continue reading</div>
@@ -68,8 +68,8 @@ export default function BlogDetailPage() {
                   <div className="aspect-[5/4] ngi-image-zoom mb-5">
                     <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
                   </div>
-                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#6D4C41] mb-2">{p.category}</div>
-                  <h3 className="font-serif text-2xl md:text-3xl font-light group-hover:text-[#6D4C41] transition-colors">{p.title}</h3>
+                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070] mb-2">{p.category}</div>
+                  <h3 className="font-serif text-2xl md:text-3xl font-light group-hover:text-[#707070] transition-colors">{p.title}</h3>
                   <div className="mt-4 inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase ngi-link-underline">Read <ArrowUpRight size={14} /></div>
                 </Link>
               ))}

@@ -32,12 +32,12 @@ export default function PortfolioPage() {
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Portfolio</div>
           <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-5xl">
-            Selected works <em className="text-[#6D4C41]">from the past decade</em>.
+            Selected works <em className="text-[#707070]">from the past decade</em>.
           </h1>
         </FadeIn>
       </section>
 
-      <section className="ngi-container border-b border-[#0B0B0D]/10 pb-6">
+      <section className="ngi-container border-b border-[#171717]/10 pb-6">
         <div className="flex flex-wrap items-center gap-2 md:gap-4">
           {FILTERS.map((f) => (
             <button
@@ -46,8 +46,8 @@ export default function PortfolioPage() {
               onClick={() => setFilter(f.key)}
               className={`text-[11px] tracking-[0.22em] uppercase py-3 px-5 transition-colors ${
                 filter === f.key
-                  ? "bg-[#0B0B0D] text-[#F7F5F2]"
-                  : "text-[#1B1D22]/70 hover:text-[#0B0B0D] border border-transparent hover:border-[#0B0B0D]/20"
+                  ? "bg-[#171717] text-white"
+                  : "text-[#1E1E1E]/70 hover:text-[#C8A46A] border border-transparent hover:border-[#C8A46A]/40"
               }`}
             >
               {f.label}
@@ -57,15 +57,8 @@ export default function PortfolioPage() {
       </section>
 
       <section className="ngi-container ngi-section">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={filter}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12"
-          >
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 min-h-[60vh]">
+          <AnimatePresence mode="popLayout">
             {visible.map((p, i) => {
               const span =
                 i % 6 === 0 ? "md:col-span-8" :
@@ -75,26 +68,34 @@ export default function PortfolioPage() {
                 i % 6 === 4 ? "md:col-span-6" :
                 "md:col-span-6 md:mt-12";
               return (
-                <FadeIn key={p.slug} delay={(i % 4) * 0.05} className={span}>
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                  transition={{ duration: 0.4, delay: (i % 4) * 0.05 }}
+                  key={p.slug} 
+                  className={span}
+                >
                   <Link to={`/portfolio/${p.slug}`} className="group block" data-testid={`project-card-${p.slug}`}>
-                    <div className={`ngi-image-zoom bg-[#E6E0D8] ${i % 3 === 0 ? "aspect-[4/5]" : "aspect-[5/4]"}`}>
-                      <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
+                    <div className={`ngi-image-zoom bg-[#E7E2DA] ${i % 3 === 0 ? "aspect-[4/5]" : "aspect-[5/4]"}`}>
+                      <img src={`${p.cover_image}?auto=compress&w=800&q=75`} alt={p.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     </div>
                     <div className="flex items-start justify-between mt-5">
                       <div>
-                        <div className="text-[10px] tracking-[0.22em] uppercase text-[#6D4C41]">{p.category} · {p.location} · {p.year}</div>
-                        <h3 className="font-serif text-2xl md:text-3xl mt-2 group-hover:text-[#6D4C41] transition-colors">{p.title}</h3>
+                        <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">{p.category} · {p.location} · {p.year}</div>
+                        <h3 className="font-serif text-2xl md:text-3xl mt-2 group-hover:text-[#707070] transition-colors">{p.title}</h3>
                       </div>
-                      <ArrowUpRight size={20} className="mt-2 group-hover:text-[#C9A86A] transition-colors" />
+                      <ArrowUpRight size={20} className="mt-2 group-hover:text-[#C8A46A] transition-colors" />
                     </div>
                   </Link>
-                </FadeIn>
+                </motion.div>
               );
             })}
-          </motion.div>
-        </AnimatePresence>
+          </AnimatePresence>
+        </motion.div>
         {visible.length === 0 && (
-          <p className="text-center text-[#1B1D22]/60 py-20">No projects yet in this category.</p>
+          <p className="text-center text-[#1E1E1E]/60 py-20">No projects yet in this category.</p>
         )}
       </section>
     </div>

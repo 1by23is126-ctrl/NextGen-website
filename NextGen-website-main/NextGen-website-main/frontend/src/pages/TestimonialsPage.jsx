@@ -17,7 +17,7 @@ export default function TestimonialsPage() {
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Said about the studio</div>
           <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-4xl">
-            From the people we have <em className="text-[#6D4C41]">worked for</em>.
+            From the people we have <em className="text-[#707070]">worked for</em>.
           </h1>
         </FadeIn>
       </section>
@@ -25,15 +25,15 @@ export default function TestimonialsPage() {
       <section className="ngi-container pb-24 md:pb-32">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
           {TESTIMONIALS.map((t, i) => (
-            <FadeIn key={i} delay={(i % 2) * 0.05} className={`border-t border-[#0B0B0D]/15 pt-8 ${i % 2 === 1 ? "md:mt-24" : ""}`}>
-              <Quote size={32} className="text-[#C9A86A] mb-6" strokeWidth={1} />
-              <p className="font-serif text-2xl md:text-3xl font-light leading-snug text-[#0B0B0D]">"{t.quote}"</p>
+            <FadeIn key={i} delay={(i % 2) * 0.05} className={`border-t border-[#171717]/15 pt-8 ${i % 2 === 1 ? "md:mt-24" : ""}`}>
+              <Quote size={32} className="text-[#C8A46A] mb-6" strokeWidth={1} />
+              <p className="font-serif text-2xl md:text-3xl font-light leading-snug text-[#171717]">"{t.quote}"</p>
               <div className="mt-8 flex items-end justify-between">
                 <div>
-                  <div className="text-[11px] tracking-[0.22em] uppercase text-[#6D4C41]">{t.author}</div>
-                  <div className="text-xs text-[#1B1D22]/60 mt-1">{t.role}</div>
+                  <div className="text-[11px] tracking-[0.22em] uppercase text-[#707070]">{t.author}</div>
+                  <div className="text-xs text-[#1E1E1E]/60 mt-1">{t.role}</div>
                 </div>
-                <div className="text-[10px] tracking-[0.22em] uppercase text-[#1B1D22]/50">{t.project}</div>
+                <div className="text-[10px] tracking-[0.22em] uppercase text-[#1E1E1E]/50">{t.project}</div>
               </div>
             </FadeIn>
           ))}

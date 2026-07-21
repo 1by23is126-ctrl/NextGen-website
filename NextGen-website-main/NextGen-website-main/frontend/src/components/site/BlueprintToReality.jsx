@@ -1,6 +1,15 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { memo, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { FadeIn } from "@/components/site/Motion";
+
+const STEP_LABELS = [
+  "Step 1: Blueprint",
+  "Step 2: Architecture",
+  "Step 3: Furnishing",
+  "Step 4: Illumination",
+  "Step 5: Finishes",
+  "Complete",
+];
 
 /**
  * BlueprintToReality Component - FIXED VERSION
@@ -9,7 +18,7 @@ import { FadeIn } from "@/components/site/Motion";
  *
  * FIX: Blueprint overlay now properly removed from DOM when hidden to prevent rendering artifacts
  */
-export default function BlueprintToReality() {
+const BlueprintToReality = memo(function BlueprintToReality() {
   const containerRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -19,6 +28,15 @@ export default function BlueprintToReality() {
 
   // Calculate progress through 6 steps (0-1 maps to step 0-6)
   const step = useTransform(scrollYProgress, [0, 1], [0, 6]);
+
+  // Step label: instead of 6 permanently-mounted, individually scroll-linked
+  // spans, track a single label index and only re-render (rare) when it
+  // actually crosses a step boundary. The crossfade itself is one motion.span.
+  const [labelIndex, setLabelIndex] = useState(0);
+  useMotionValueEvent(step, "change", (latest) => {
+    const idx = Math.min(STEP_LABELS.length - 1, Math.max(0, Math.round(latest)));
+    setLabelIndex((prev) => (prev === idx ? prev : idx));
+  });
 
   // Background image transitions for the transformation
   const stageTwoOpacity = useTransform(step, [1.2, 2.8, 3.8], [0, 1, 0]);
@@ -39,6 +57,27 @@ export default function BlueprintToReality() {
   // Final completed space text block (fades in at step 6)
   const finalOpacity = useTransform(step, [5.2, 5.8], [0, 1]);
 
+  const processCards = useMemo(
+    () => [
+      {
+        num: "01",
+        title: "Discovery",
+        desc: "We listen more than we speak. Understanding how you live is where every great space begins.",
+      },
+      {
+        num: "02",
+        title: "Design",
+        desc: "Every line, every material, every joint is drawn and reconsidered until it feels inevitable.",
+      },
+      {
+        num: "03",
+        title: "Execute",
+        desc: "We see it through to completion. The finished space should feel like it always belonged.",
+      },
+    ],
+    []
+  );
+
   // Slight scale animations for smoothness
   const wallsScale = useTransform(step, [1.2, 1.8], [0.95, 1]);
   const furnitureScale = useTransform(step, [2.2, 2.8], [0.95, 1]);
@@ -46,64 +85,33 @@ export default function BlueprintToReality() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[250vh] bg-gradient-to-b from-[#F7F5F2] via-[#E6E0D8]/30 to-[#F7F5F2]"
+      className="relative min-h-[250vh] bg-[#171717] text-white"
       data-testid="blueprint-to-reality"
     >
       {/* Sticky container for the transformation visualization */}
-      <div className="sticky top-0 h-screen overflow-hidden bg-[#F7F5F2]">
+      <div className="sticky top-0 h-screen overflow-hidden bg-[#171717]">
         <div className="relative w-full h-full flex items-center justify-center">
-          {/* Step indicators - subtle text on top right */}
-          <motion.div className="absolute top-12 right-12 z-10 text-right">
-            <motion.div className="text-[12px] tracking-[0.2em] uppercase text-[#0B0B0D]/40 font-light">
-              <motion.span>
+          {/* Step indicator - subtle text on top right. One crossfading span
+              instead of 6 permanently-mounted, individually scroll-linked ones. */}
+          <div className="absolute top-12 right-12 z-10 text-right">
+            <div className="text-[12px] tracking-[0.2em] uppercase text-white/75 font-light">
+              <AnimatePresence mode="wait">
                 <motion.span
-                  style={{
-                    opacity: useTransform(step, [0, 1.5], [1, 0]),
-                  }}
+                  key={labelIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="block"
                 >
-                  Step 1: Blueprint
+                  {STEP_LABELS[labelIndex]}
                 </motion.span>
-                <motion.span
-                  style={{
-                    opacity: useTransform(step, [1.2, 1.8, 3], [0, 1, 0]),
-                  }}
-                >
-                  {"\n"}Step 2: Architecture
-                </motion.span>
-                <motion.span
-                  style={{
-                    opacity: useTransform(step, [2.2, 2.8, 4], [0, 1, 0]),
-                  }}
-                >
-                  {"\n"}Step 3: Furnishing
-                </motion.span>
-                <motion.span
-                  style={{
-                    opacity: useTransform(step, [3.2, 3.8, 5], [0, 1, 0]),
-                  }}
-                >
-                  {"\n"}Step 4: Illumination
-                </motion.span>
-                <motion.span
-                  style={{
-                    opacity: useTransform(step, [4.2, 4.8, 5.5], [0, 1, 0]),
-                  }}
-                >
-                  {"\n"}Step 5: Finishes
-                </motion.span>
-                <motion.span
-                  style={{
-                    opacity: useTransform(step, [5.2, 5.8], [0, 1]),
-                  }}
-                >
-                  {"\n"}Complete
-                </motion.span>
-              </motion.span>
-            </motion.div>
-          </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
 
           {/* Main transformation container */}
-          <div className="relative w-full h-full flex items-center justify-center px-6 md:px-12 lg:px-24 bg-gradient-to-br from-[#F7F5F2] via-[#F5F1E8] to-[#F0EBE0]">
+          <div className="relative w-full h-full flex items-center justify-center px-6 md:px-12 lg:px-24 bg-[#171717]">
             {/* Base/Background layer */}
             <div className="absolute inset-0 w-full h-full">
               <motion.img
@@ -127,8 +135,8 @@ export default function BlueprintToReality() {
               style={{ opacity: wallsOpacity, scale: wallsScale, willChange: "opacity, transform" }}
               className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-[#E6E0D8] via-[#F7F5F2] to-[#E6E0D8] opacity-40" />
-              <div className="absolute inset-0 border-4 border-[#C9A86A]/20" />
+              <div className="absolute inset-0 bg-[#262626] opacity-40" />
+              <div className="absolute inset-0 border-4 border-[#C8A46A]/20" />
             </motion.div>
 
             {/* Step 3: Furniture silhouettes */}
@@ -136,7 +144,7 @@ export default function BlueprintToReality() {
               style={{ opacity: furnitureOpacity, scale: furnitureScale, willChange: "opacity, transform" }}
               className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
             >
-              <div className="absolute inset-0 bg-gradient-radial from-[#0B0B0D]/5 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-radial from-white/10 to-transparent" />
             </motion.div>
 
             {/* Step 4: Lighting effect (warm glow) */}
@@ -144,8 +152,8 @@ export default function BlueprintToReality() {
               style={{ opacity: lightingOpacity, willChange: "opacity" }}
               className="absolute inset-0 w-full h-full pointer-events-none"
             >
-              <div className="absolute top-0 left-1/3 w-96 h-96 bg-gradient-radial from-[#C9A86A]/20 to-transparent blur-3xl" />
-              <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-radial from-[#C9A86A]/15 to-transparent blur-3xl" />
+              <div className="absolute top-0 left-1/3 w-96 h-96 bg-gradient-radial from-[#C8A46A]/20 to-transparent blur-3xl" />
+              <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-radial from-[#C8A46A]/15 to-transparent blur-3xl" />
             </motion.div>
 
             {/* Step 5: Texture overlay (subtle) */}
@@ -168,23 +176,18 @@ export default function BlueprintToReality() {
               style={{ opacity: finalOpacity, willChange: "opacity" }}
               className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-[#0B0B0D]/0 via-[#0B0B0D]/0 to-[#0B0B0D]/20" />
-              <motion.div className="relative w-full h-full flex items-end justify-start p-12">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1 }}
-                  className="max-w-md z-10"
-                >
-                  <div className="text-[11px] tracking-[0.22em] uppercase text-[#C9A86A] mb-4">The Complete Vision</div>
-                  <h3 className="font-serif text-4xl md:text-5xl text-[#0B0B0D] font-light leading-tight mb-4">
+              <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/0 via-[#171717]/0 to-[#171717]/20" />
+              <div className="relative w-full h-full flex items-end justify-start p-12">
+                <div className="max-w-md z-10">
+                  <div className="text-[11px] tracking-[0.22em] uppercase text-[#C8A46A] mb-4">The Complete Vision</div>
+                  <h3 className="font-serif text-4xl md:text-5xl text-white font-light leading-tight mb-4">
                     A space that evolves with you
                   </h3>
-                  <p className="text-[#0B0B0D]/70 text-sm leading-relaxed">
+                  <p className="text-white/75 text-sm leading-relaxed">
                     Every detail, from the blueprint to the final finish, is designed to create an environment that holds a quiet conversation with the people inside it.
                   </p>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -196,14 +199,14 @@ export default function BlueprintToReality() {
           style={{
             opacity: useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]),
           }}
-          className="text-[12px] tracking-[0.2em] uppercase text-[#0B0B0D]/50 font-light"
+          className="text-[12px] tracking-[0.2em] uppercase text-white/75 font-light"
         >
           Scroll to reveal the transformation
         </motion.div>
       </div>
 
       {/* Content section below the sticky transformation */}
-      <div className="relative bg-[#F7F5F2] py-24 md:py-32 lg:py-40">
+      <div className="relative bg-[#171717] py-24 md:py-32 lg:py-40">
         <div className="ngi-container">
           <FadeIn className="max-w-3xl">
             <div className="ngi-overline mb-4">
@@ -212,35 +215,19 @@ export default function BlueprintToReality() {
             <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter leading-[1.05] max-w-4xl mb-8">
               From vision to reality in six considered steps.
             </h2>
-            <p className="text-lg md:text-xl text-[#0B0B0D]/70 leading-relaxed max-w-2xl">
+            <p className="text-lg md:text-xl text-white/75 leading-relaxed max-w-2xl">
               What you've just witnessed isn't just an animation—it's our design philosophy made visible. We begin where every great project begins: with an idea. Then we build it with intention, craft, and an obsessive attention to every detail.
             </p>
           </FadeIn>
 
           {/* Quick process overview */}
           <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-12">
-            {[
-              {
-                num: "01",
-                title: "Discovery",
-                desc: "We listen more than we speak. Understanding how you live is where every great space begins.",
-              },
-              {
-                num: "02",
-                title: "Design",
-                desc: "Every line, every material, every joint is drawn and reconsidered until it feels inevitable.",
-              },
-              {
-                num: "03",
-                title: "Execute",
-                desc: "We see it through to completion. The finished space should feel like it always belonged.",
-              },
-            ].map((p, i) => (
+            {processCards.map((p, i) => (
               <FadeIn key={i} delay={i * 0.1}>
-                <div className="border-t border-[#0B0B0D]/10 pt-6">
-                  <div className="text-6xl font-serif text-[#C9A86A] font-light mb-4">{p.num}</div>
+                <div className="border-t border-white/20 pt-6">
+                  <div className="text-6xl font-serif text-[#C8A46A] font-light mb-4">{p.num}</div>
                   <h3 className="font-serif text-2xl md:text-3xl font-light mb-3">{p.title}</h3>
-                  <p className="text-sm leading-relaxed text-[#0B0B0D]/70">{p.desc}</p>
+                  <p className="text-sm leading-relaxed text-white/75">{p.desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -249,4 +236,6 @@ export default function BlueprintToReality() {
       </div>
     </section>
   );
-}
+});
+
+export default BlueprintToReality;

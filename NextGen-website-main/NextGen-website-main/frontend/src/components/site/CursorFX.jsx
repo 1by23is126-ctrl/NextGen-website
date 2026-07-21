@@ -1,6 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useEffect, useMemo, useRef } from "react";
 
+/**
+ * Lightweight custom cursor.
+ * - No Framer Motion, no spring physics, no React re-renders on movement.
+ * - A single rAF loop lerps the dot toward the pointer and writes
+ *   translate3d directly to the DOM node (GPU-composited, no layout/paint cost).
+ * - Magnetic pull is only computed while actively hovering a `.magnetic` element.
+ */
 export default function CursorFX() {
   const isTouchDevice = useMemo(() => {
     if (typeof window === "undefined") return true;
@@ -11,58 +17,36 @@ export default function CursorFX() {
     );
   }, []);
 
-  const pointerX = useMotionValue(-100);
-  const pointerY = useMotionValue(-100);
-  const springX = useSpring(pointerX, { stiffness: 160, damping: 24 });
-  const springY = useSpring(pointerY, { stiffness: 160, damping: 24 });
-  const offsetX = useTransform(springX, (value) => value - 30);
-  const offsetY = useTransform(springY, (value) => value - 30);
-  const [hovered, setHovered] = useState(false);
+  const dotRef = useRef(null);
+  const target = useRef({ x: -100, y: -100 });
+  const current = useRef({ x: -100, y: -100 });
+  const hovered = useRef(false);
   const activeMagnetic = useRef(null);
   const cachedRect = useRef(null);
-  const magneticRAF = useRef(null);
+  const rafId = useRef(null);
 
   useEffect(() => {
     if (typeof window === "undefined" || isTouchDevice) return;
 
-    // Throttled magnetic calculation using RAF - PERFORMANCE FIX
-    let lastX = 0;
-    let lastY = 0;
-
-    const updateMagneticThrottled = (clientX, clientY) => {
-      if (!activeMagnetic.current) return;
-      
-      // Only recalculate rect if element changed or hasn't been cached
-      if (!cachedRect.current) {
-        cachedRect.current = activeMagnetic.current.getBoundingClientRect();
-      }
-
-      const rect = cachedRect.current;
-      const offsetX = ((clientX - rect.left) / rect.width - 0.5) * 16;
-      const offsetY = ((clientY - rect.top) / rect.height - 0.5) * 8;
-      activeMagnetic.current.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
-    };
-
     const updateCursor = (event) => {
-      pointerX.set(event.clientX);
-      pointerY.set(event.clientY);
-      lastX = event.clientX;
-      lastY = event.clientY;
+      target.current.x = event.clientX;
+      target.current.y = event.clientY;
 
-      // Throttle magnetic calculation with RAF
-      if (activeMagnetic.current && !magneticRAF.current) {
-        magneticRAF.current = requestAnimationFrame(() => {
-          updateMagneticThrottled(lastX, lastY);
-          magneticRAF.current = null;
-        });
+      if (activeMagnetic.current) {
+        if (!cachedRect.current) {
+          cachedRect.current = activeMagnetic.current.getBoundingClientRect();
+        }
+        const rect = cachedRect.current;
+        const offsetX = ((event.clientX - rect.left) / rect.width - 0.5) * 16;
+        const offsetY = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
+        activeMagnetic.current.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
       }
     };
 
     const onPointerOver = (event) => {
       const target = event.target.closest("a,button,.ngi-image-zoom,.magnetic");
-      if (target) {
-        setHovered(true);
-      }
+      hovered.current = !!target;
+
       const magnetic = event.target.closest(".magnetic");
       if (magnetic) {
         activeMagnetic.current = magnetic;
@@ -74,20 +58,31 @@ export default function CursorFX() {
     const onPointerOut = (event) => {
       const related = event.relatedTarget;
       const staysHovered = related && related.closest && related.closest("a,button,.ngi-image-zoom,.magnetic");
-      if (!staysHovered) {
-        setHovered(false);
-      }
+      if (!staysHovered) hovered.current = false;
+
       const magnetic = event.target.closest(".magnetic");
       if (magnetic && activeMagnetic.current === magnetic) {
         magnetic.style.transform = "";
         activeMagnetic.current = null;
         cachedRect.current = null;
-        if (magneticRAF.current) {
-          cancelAnimationFrame(magneticRAF.current);
-          magneticRAF.current = null;
-        }
       }
     };
+
+    // Single rAF loop: lerp toward the pointer and write translate3d directly.
+    // This replaces spring physics with a cheap, constant-cost linear interpolation.
+    const tick = () => {
+      current.current.x += (target.current.x - current.current.x) * 0.22;
+      current.current.y += (target.current.y - current.current.y) * 0.22;
+
+      if (dotRef.current) {
+        const scale = hovered.current ? 1 : 0.4;
+        dotRef.current.style.transform = `translate3d(${current.current.x - 30}px, ${current.current.y - 30}px, 0) scale(${scale})`;
+        dotRef.current.style.backgroundColor = hovered.current ? "rgba(201,168,106,0.18)" : "rgba(255,255,255,0.08)";
+        dotRef.current.style.borderColor = hovered.current ? "#C8A46A" : "rgba(255,255,255,0.5)";
+      }
+      rafId.current = requestAnimationFrame(tick);
+    };
+    rafId.current = requestAnimationFrame(tick);
 
     window.addEventListener("pointermove", updateCursor);
     window.addEventListener("pointerover", onPointerOver);
@@ -97,35 +92,28 @@ export default function CursorFX() {
       window.removeEventListener("pointermove", updateCursor);
       window.removeEventListener("pointerover", onPointerOver);
       window.removeEventListener("pointerout", onPointerOut);
-      if (activeMagnetic.current) {
-        activeMagnetic.current.style.transform = "";
-      }
-      if (magneticRAF.current) {
-        cancelAnimationFrame(magneticRAF.current);
-      }
+      if (activeMagnetic.current) activeMagnetic.current.style.transform = "";
+      if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [isTouchDevice, pointerX, pointerY]);
+  }, [isTouchDevice]);
 
   if (isTouchDevice) return null;
 
   return (
-    <motion.div
-      className="fixed top-0 left-0 z-10 pointer-events-none hidden lg:block"
+    <div
+      ref={dotRef}
+      className="fixed top-0 left-0 z-10 pointer-events-none hidden lg:block rounded-full"
       style={{
-        x: offsetX,
-        y: offsetY,
         width: 60,
         height: 60,
-        borderRadius: "9999px",
-        scale: hovered ? 1 : 0.4,
-        backgroundColor: hovered ? "rgba(201,168,106,0.18)" : "rgba(255,255,255,0.08)",
-        border: hovered ? "1px solid #C9A86A" : "1px solid rgba(255,255,255,0.5)",
+        border: "1px solid rgba(255,255,255,0.5)",
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)",
         transformOrigin: "center",
         willChange: "transform",
+        transform: "translate3d(-100px, -100px, 0) scale(0.4)",
+        transition: "background-color 0.2s ease, border-color 0.2s ease",
       }}
-      transition={{ type: "spring", stiffness: 260, damping: 28 }}
     />
   );
 }

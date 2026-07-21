@@ -26,7 +26,7 @@ export default function FAQPage() {
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Frequently asked</div>
           <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-4xl">
-            The questions we are <em className="text-[#6D4C41]">often asked</em>.
+            The questions we are <em className="text-[#707070]">often asked</em>.
           </h1>
         </FadeIn>
       </section>
@@ -36,12 +36,12 @@ export default function FAQPage() {
           <div className="ngi-overline mb-4"><span className="ngi-rule" />Topics</div>
           <ul className="space-y-2">
             {categories.map((c) => (
-              <li key={c} className="text-[#1B1D22]/70 text-sm">— {c}</li>
+              <li key={c} className="text-[#1E1E1E]/70 text-sm">— {c}</li>
             ))}
           </ul>
         </FadeIn>
 
-        <div className="md:col-span-8 md:col-start-5 divide-y divide-[#0B0B0D]/15 border-t border-b border-[#0B0B0D]/15">
+        <div className="md:col-span-8 md:col-start-5 divide-y divide-[#171717]/15 border-t border-b border-[#171717]/15">
           {FAQS.map((f, i) => (
             <div key={i}>
               <button
@@ -50,33 +50,31 @@ export default function FAQPage() {
                 className="w-full text-left py-7 flex items-start justify-between gap-6"
               >
                 <div className="flex-1">
-                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#6D4C41] mb-2">{f.cat}</div>
+                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070] mb-2">{f.cat}</div>
                   <h3 className="font-serif text-xl md:text-2xl font-light">{f.q}</h3>
                 </div>
-                {open === i ? <Minus size={20} className="text-[#C9A86A] mt-1" /> : <Plus size={20} className="text-[#C9A86A] mt-1" />}
+                {open === i ? <Minus size={20} className="text-[#C8A46A] mt-1" /> : <Plus size={20} className="text-[#C8A46A] mt-1" />}
               </button>
-              <AnimatePresence>
-                {open === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="pb-7 text-[#1B1D22]/80 leading-relaxed max-w-2xl">{f.a}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div
+                className="grid transition-all duration-300 ease-in-out"
+                style={{
+                  gridTemplateRows: open === i ? "1fr" : "0fr",
+                  opacity: open === i ? 1 : 0,
+                }}
+              >
+                <div className="overflow-hidden">
+                  <p className="pb-7 text-[#1E1E1E]/80 leading-relaxed max-w-2xl">{f.a}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
       <section className="ngi-section ngi-container">
-        <div className="bg-[#0B0B0D] text-[#F7F5F2] p-12 md:p-20 text-center ngi-grain">
+        <div className="bg-[#171717] text-white p-12 md:p-20 text-center ngi-grain">
           <h2 className="font-serif text-3xl md:text-5xl font-light max-w-2xl mx-auto">A question we haven't answered?</h2>
-          <Link to="/contact" className="inline-flex mt-8 bg-[#C9A86A] text-[#0B0B0D] hover:bg-[#F7F5F2] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
+          <Link to="/contact" className="inline-flex mt-8 bg-[#C8A46A] text-white hover:bg-[#D6B27A] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
             Write to us →
           </Link>
         </div>

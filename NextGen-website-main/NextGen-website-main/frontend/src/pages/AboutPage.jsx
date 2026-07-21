@@ -22,7 +22,7 @@ export default function AboutPage() {
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />The Studio</div>
           <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-5xl">
-            A small studio in Bengaluru, working <em className="text-[#6D4C41]">unhurriedly</em>, across India.
+            A small studio in Bengaluru, working <em className="text-[#707070]">unhurriedly</em>, across India.
           </h1>
         </FadeIn>
       </section>
@@ -34,16 +34,16 @@ export default function AboutPage() {
           </div>
         </FadeIn>
         <FadeIn className="md:col-span-4 md:col-start-9 self-end" delay={0.1}>
-          <p className="text-base md:text-lg leading-relaxed text-[#1B1D22]/85">
+          <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/85">
             NextGen Interiors is a thirteen-person practice founded in 2013. We work on residential and commercial interior architecture — homes, offices, restaurants — for clients who care about how a room feels at 7am.
           </p>
-          <p className="mt-6 text-base md:text-lg leading-relaxed text-[#1B1D22]/85">
+          <p className="mt-6 text-base md:text-lg leading-relaxed text-[#1E1E1E]/85">
             We are not stylists. We are interior architects, which is to say we draw every joint, specify every finish, and stand on site every week until the work is finished.
           </p>
         </FadeIn>
       </section>
 
-      <section className="bg-[#E6E0D8]/40">
+      <section className="bg-[#E7E2DA]/40">
         <div className="ngi-container ngi-section">
           <FadeIn className="mb-16 max-w-2xl">
             <div className="ngi-overline mb-4"><span className="ngi-rule" />Four principles</div>
@@ -51,10 +51,10 @@ export default function AboutPage() {
           </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {PRINCIPLES.map((p, i) => (
-              <FadeIn key={p.n} delay={i * 0.06} className="border-t border-[#0B0B0D]/15 pt-6">
-                <div className="font-serif text-5xl text-[#C9A86A] font-light mb-3">{p.n}</div>
+              <FadeIn key={p.n} delay={i * 0.06} className="border-t border-[#171717]/15 pt-6">
+                <div className="font-serif text-5xl text-[#C8A46A] font-light mb-3">{p.n}</div>
                 <h3 className="font-serif text-2xl md:text-3xl font-light mb-3">{p.t}</h3>
-                <p className="text-[#1B1D22]/75 leading-relaxed">{p.d}</p>
+                <p className="text-[#1E1E1E]/75 leading-relaxed">{p.d}</p>
               </FadeIn>
             ))}
           </div>
@@ -69,22 +69,22 @@ export default function AboutPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {TEAM.map((m, i) => (
             <FadeIn key={m.name} delay={i * 0.06}>
-              <div className="aspect-[3/4] ngi-image-zoom bg-[#E6E0D8]">
+              <div className="aspect-[3/4] ngi-image-zoom bg-[#E7E2DA]">
                 <img src={m.img} alt={m.name} className="w-full h-full object-cover grayscale" />
               </div>
               <h3 className="mt-4 font-serif text-xl font-medium">{m.name}</h3>
-              <div className="text-[11px] tracking-[0.2em] uppercase text-[#6D4C41] mt-1">{m.role}</div>
+              <div className="text-[11px] tracking-[0.2em] uppercase text-[#707070] mt-1">{m.role}</div>
             </FadeIn>
           ))}
         </div>
       </section>
 
-      <section className="bg-[#0B0B0D] text-[#F7F5F2]">
+      <section className="bg-[#171717] text-white">
         <div className="ngi-container py-20 grid grid-cols-2 md:grid-cols-4 gap-10">
           {[{ n: 240, s: "+", l: "Projects" }, { n: 12, s: "", l: "Years" }, { n: 14, s: "", l: "Cities" }, { n: 13, s: "", l: "People in studio" }].map((s, i) => (
             <FadeIn key={i} delay={i * 0.06}>
-              <div className="font-serif text-5xl md:text-6xl text-[#C9A86A]"><CountUp to={s.n} suffix={s.s} /></div>
-              <div className="text-[10px] tracking-[0.22em] uppercase text-[#F7F5F2]/60 mt-3">{s.l}</div>
+              <div className="font-serif text-5xl md:text-6xl text-[#C8A46A]"><CountUp to={s.n} suffix={s.s} /></div>
+              <div className="text-[10px] tracking-[0.22em] uppercase text-white/60 mt-3">{s.l}</div>
             </FadeIn>
           ))}
         </div>
@@ -96,7 +96,7 @@ export default function AboutPage() {
           <h2 className="font-serif text-4xl md:text-6xl font-light tracking-tight leading-tight max-w-3xl mx-auto">
             Begin a conversation.
           </h2>
-          <Link to="/consultation" data-testid="about-cta" className="inline-flex mt-10 bg-[#0B0B0D] text-[#F7F5F2] hover:bg-[#C9A86A] hover:text-[#0B0B0D] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors duration-300">
+          <Link to="/consultation" data-testid="about-cta" className="inline-flex mt-10 bg-[#171717] text-white hover:bg-[#C8A46A] hover:text-white px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors duration-300">
             Book a Consultation
           </Link>
         </FadeIn>

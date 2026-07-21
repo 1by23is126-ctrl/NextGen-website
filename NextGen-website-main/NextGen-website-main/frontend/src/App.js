@@ -1,4 +1,5 @@
 import "@/App.css";
+import React, { Suspense, lazy, memo } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
@@ -10,27 +11,39 @@ import Footer from "@/components/site/Footer";
 import WhatsAppButton from "@/components/site/WhatsAppButton";
 import PageLoader from "@/components/site/PageLoader";
 
-import HomePage from "@/pages/HomePage";
-import AboutPage from "@/pages/AboutPage";
-import ServicesPage from "@/pages/ServicesPage";
-import ServiceDetailPage from "@/pages/ServiceDetailPage";
-import PortfolioPage from "@/pages/PortfolioPage";
-import ProjectDetailPage from "@/pages/ProjectDetailPage";
-import ProcessPage from "@/pages/ProcessPage";
-import TestimonialsPage from "@/pages/TestimonialsPage";
-import BlogPage from "@/pages/BlogPage";
-import BlogDetailPage from "@/pages/BlogDetailPage";
-import FAQPage from "@/pages/FAQPage";
-import ContactPage from "@/pages/ContactPage";
-import ConsultationPage from "@/pages/ConsultationPage";
-import PrivacyPage from "@/pages/PrivacyPage";
-import NotFoundPage from "@/pages/NotFoundPage";
-import AdminLoginPage from "@/pages/admin/AdminLoginPage";
-import AdminLayout from "@/pages/admin/AdminLayout";
-import AdminLeadsPage from "@/pages/admin/AdminLeadsPage";
-import AdminBlogPage from "@/pages/admin/AdminBlogPage";
+const HomePage = lazy(() => import("@/pages/HomePage"));
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const ServicesPage = lazy(() => import("@/pages/ServicesPage"));
+const ServiceDetailPage = lazy(() => import("@/pages/ServiceDetailPage"));
+const PortfolioPage = lazy(() => import("@/pages/PortfolioPage"));
+const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage"));
+const ProcessPage = lazy(() => import("@/pages/ProcessPage"));
+const TestimonialsPage = lazy(() => import("@/pages/TestimonialsPage"));
+const BlogPage = lazy(() => import("@/pages/BlogPage"));
+const BlogDetailPage = lazy(() => import("@/pages/BlogDetailPage"));
+const FAQPage = lazy(() => import("@/pages/FAQPage"));
+const ContactPage = lazy(() => import("@/pages/ContactPage"));
+const ConsultationPage = lazy(() => import("@/pages/ConsultationPage"));
+const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
+const AdminLoginPage = lazy(() => import("@/pages/admin/AdminLoginPage"));
+const AdminLayout = lazy(() => import("@/pages/admin/AdminLayout"));
+const AdminLeadsPage = lazy(() => import("@/pages/admin/AdminLeadsPage"));
+const AdminBlogPage = lazy(() => import("@/pages/admin/AdminBlogPage"));
 
-function SiteLayout({ children }) {
+const RouteFallback = memo(function RouteFallback() {
+  return (
+    <div className="min-h-screen bg-[#F6F4F1] flex items-center justify-center px-6">
+      <div className="w-full max-w-sm rounded-[24px] border border-[#E7E2DA] bg-white/80 px-8 py-10 text-center shadow-[0_18px_50px_rgba(23,23,23,0.06)]">
+        <div className="mx-auto mb-4 h-2 w-2 rounded-full bg-[#C8A46A]" />
+        <div className="font-serif text-xl tracking-tight text-[#171717]">Loading experience</div>
+        <div className="mt-2 text-sm text-[#707070]">Preparing the next section with a lighter touch.</div>
+      </div>
+    </div>
+  );
+});
+
+const SiteLayout = memo(function SiteLayout({ children }) {
   return (
     <>
       <Navbar />
@@ -39,7 +52,7 @@ function SiteLayout({ children }) {
       <WhatsAppButton />
     </>
   );
-}
+});
 
 function App() {
   return (
@@ -53,34 +66,36 @@ function App() {
           <Toaster
             position="bottom-center"
             toastOptions={{
-              style: { background: "#0B0B0D", color: "#F7F5F2", border: "1px solid #C9A86A", borderRadius: 0 },
+              style: { background: "#171717", color: "#F6F4F1", border: "1px solid #C8A46A", borderRadius: 0 },
             }}
           />
-          <Routes>
-            <Route path="/" element={<SiteLayout><HomePage /></SiteLayout>} />
-            <Route path="/about" element={<SiteLayout><AboutPage /></SiteLayout>} />
-            <Route path="/services" element={<SiteLayout><ServicesPage /></SiteLayout>} />
-            <Route path="/services/:slug" element={<SiteLayout><ServiceDetailPage /></SiteLayout>} />
-            <Route path="/portfolio" element={<SiteLayout><PortfolioPage /></SiteLayout>} />
-            <Route path="/portfolio/:slug" element={<SiteLayout><ProjectDetailPage /></SiteLayout>} />
-            <Route path="/process" element={<SiteLayout><ProcessPage /></SiteLayout>} />
-            <Route path="/testimonials" element={<SiteLayout><TestimonialsPage /></SiteLayout>} />
-            <Route path="/journal" element={<SiteLayout><BlogPage /></SiteLayout>} />
-            <Route path="/journal/:slug" element={<SiteLayout><BlogDetailPage /></SiteLayout>} />
-            <Route path="/faq" element={<SiteLayout><FAQPage /></SiteLayout>} />
-            <Route path="/contact" element={<SiteLayout><ContactPage /></SiteLayout>} />
-            <Route path="/consultation" element={<SiteLayout><ConsultationPage /></SiteLayout>} />
-            <Route path="/privacy" element={<SiteLayout><PrivacyPage /></SiteLayout>} />
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route path="/" element={<SiteLayout><HomePage /></SiteLayout>} />
+              <Route path="/about" element={<SiteLayout><AboutPage /></SiteLayout>} />
+              <Route path="/services" element={<SiteLayout><ServicesPage /></SiteLayout>} />
+              <Route path="/services/:slug" element={<SiteLayout><ServiceDetailPage /></SiteLayout>} />
+              <Route path="/portfolio" element={<SiteLayout><PortfolioPage /></SiteLayout>} />
+              <Route path="/portfolio/:slug" element={<SiteLayout><ProjectDetailPage /></SiteLayout>} />
+              <Route path="/process" element={<SiteLayout><ProcessPage /></SiteLayout>} />
+              <Route path="/testimonials" element={<SiteLayout><TestimonialsPage /></SiteLayout>} />
+              <Route path="/journal" element={<SiteLayout><BlogPage /></SiteLayout>} />
+              <Route path="/journal/:slug" element={<SiteLayout><BlogDetailPage /></SiteLayout>} />
+              <Route path="/faq" element={<SiteLayout><FAQPage /></SiteLayout>} />
+              <Route path="/contact" element={<SiteLayout><ContactPage /></SiteLayout>} />
+              <Route path="/consultation" element={<SiteLayout><ConsultationPage /></SiteLayout>} />
+              <Route path="/privacy" element={<SiteLayout><PrivacyPage /></SiteLayout>} />
 
-            <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminLeadsPage />} />
-              <Route path="leads" element={<AdminLeadsPage />} />
-              <Route path="blog" element={<AdminBlogPage />} />
-            </Route>
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminLeadsPage />} />
+                <Route path="leads" element={<AdminLeadsPage />} />
+                <Route path="blog" element={<AdminBlogPage />} />
+              </Route>
 
-            <Route path="*" element={<SiteLayout><NotFoundPage /></SiteLayout>} />
-          </Routes>
+              <Route path="*" element={<SiteLayout><NotFoundPage /></SiteLayout>} />
+            </Routes>
+          </Suspense>
         </AuthProvider>
       </BrowserRouter>
     </div>

@@ -7,9 +7,9 @@ export default function PrivacyPage() {
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Privacy</div>
           <h1 className="font-serif text-5xl md:text-6xl font-light tracking-tighter leading-tight">Privacy Policy</h1>
-          <p className="mt-6 text-sm text-[#1B1D22]/60">Last updated · {new Date().toLocaleDateString("en-IN", { year: "numeric", month: "long" })}</p>
+          <p className="mt-6 text-sm text-[#1E1E1E]/60">Last updated · {new Date().toLocaleDateString("en-IN", { year: "numeric", month: "long" })}</p>
 
-          <div className="prose max-w-none mt-12 text-[#1B1D22]/85 leading-relaxed space-y-6">
+          <div className="prose max-w-none mt-12 text-[#1E1E1E]/85 leading-relaxed space-y-6">
             <p>NextGen Interiors LLP ("we", "us", "our") respects your privacy. This policy describes what information we collect when you visit our website or engage our studio, and how we use it.</p>
 
             <h2 className="font-serif text-2xl mt-12">What we collect</h2>

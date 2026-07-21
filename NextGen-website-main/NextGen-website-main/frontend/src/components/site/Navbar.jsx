@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const NAV = [
@@ -13,17 +13,21 @@ const NAV = [
   { to: "/contact", label: "Contact" },
 ];
 
-export default function Navbar() {
+const Navbar = memo(function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
+  const overDarkHero = !scrolled && (pathname === "/" || pathname.startsWith("/portfolio/"));
+  const navText = overDarkHero ? "text-white" : "text-[#171717]";
+  const mutedNavText = overDarkHero ? "text-white/75 hover:text-[#C8A46A]" : "text-[#1E1E1E]/70 hover:text-[#C8A46A]";
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 24);
+  });
+
+  const toggleMenu = useCallback(() => setOpen((v) => !v), []);
 
   useEffect(() => {
     setOpen(false);
@@ -33,14 +37,16 @@ export default function Navbar() {
     <header
       data-testid="site-navbar"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "bg-[#F7F5F2]/95 backdrop-blur-md border-b border-[#0B0B0D]/10" : "bg-transparent"
+        scrolled ? "bg-[#F7F4EF]/90 backdrop-blur-xl border-b border-[#EFE7DC] shadow-[0_12px_35px_rgba(45,42,38,0.06)]" : "bg-transparent"
       }`}
     >
-      <div className="ngi-container flex items-center justify-between py-5 md:py-6">
+      <div className={`ngi-container mt-4 flex items-center justify-between rounded-full border px-4 py-3 md:px-6 md:py-4 transition-all duration-500 ${
+        scrolled ? "border-[#EFE7DC] bg-[#F7F4EF]/90 shadow-[0_12px_35px_rgba(45,42,38,0.06)]" : "border-white/20 bg-white/10 backdrop-blur-md"
+      }`}>
         <Link to="/" data-testid="nav-logo" className="flex items-center gap-3 group">
-          <span className="block w-2 h-2 bg-[#C9A86A]" />
-          <span className="font-serif text-xl md:text-2xl tracking-tight text-[#0B0B0D]">
-            NextGen <span className="italic font-normal text-[#6D4C41]">Interiors</span>
+          <span className="block w-2 h-2 bg-[#C8A46A]" />
+          <span className={`font-serif text-xl md:text-2xl tracking-tight ${navText}`}>
+            NextGen <span className={`italic font-normal ${overDarkHero ? "text-[#C8A46A]" : "text-[#707070]"}`}>Interiors</span>
           </span>
         </Link>
 
@@ -52,7 +58,7 @@ export default function Navbar() {
               data-testid={`nav-${n.label.toLowerCase()}`}
               className={({ isActive }) =>
                 `text-[13px] tracking-wider uppercase ngi-link-underline transition-colors ${
-                  isActive ? "text-[#0B0B0D]" : "text-[#1B1D22]/70 hover:text-[#0B0B0D]"
+                  isActive ? navText : mutedNavText
                 }`
               }
               end={n.to === "/"}
@@ -66,14 +72,15 @@ export default function Navbar() {
           <Link
             to="/consultation"
             data-testid="nav-book-cta"
-            className="hidden md:inline-flex items-center bg-[#0B0B0D] text-[#F7F5F2] px-6 py-3 text-[11px] tracking-[0.22em] uppercase hover:bg-[#C9A86A] hover:text-[#0B0B0D] transition-colors duration-300"
+            className="hidden md:inline-flex items-center rounded-full bg-[#2D2A26] text-white px-6 py-3 text-[11px] tracking-[0.22em] uppercase hover:bg-[#B38B59] hover:text-white transition-colors duration-300"
           >
             Book Consultation
           </Link>
           <button
             data-testid="nav-mobile-toggle"
-            onClick={() => setOpen((v) => !v)}
-            className="lg:hidden w-10 h-10 flex items-center justify-center border border-[#0B0B0D]/15 text-[#0B0B0D]"
+            onClick={toggleMenu}
+            aria-expanded={open}
+            className={`lg:hidden w-10 h-10 flex items-center justify-center rounded-full border transition-colors ${overDarkHero ? "border-white/25 text-white" : "border-[#EFE7DC] text-[#2D2A26] bg-white/80 backdrop-blur-sm"}`}
             aria-label="Open menu"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
@@ -88,7 +95,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden bg-[#F7F5F2] border-t border-[#0B0B0D]/10"
+            className="lg:hidden bg-[#F7F4EF] border-t border-[#EFE7DC]"
           >
             <div className="ngi-container py-8 flex flex-col gap-4">
               {NAV.map((n) => (
@@ -96,7 +103,7 @@ export default function Navbar() {
                   key={n.to}
                   to={n.to}
                   data-testid={`mobile-nav-${n.label.toLowerCase()}`}
-                  className="font-serif text-3xl text-[#0B0B0D]"
+                  className="font-serif text-3xl text-[#2D2A26]"
                   end={n.to === "/"}
                 >
                   {n.label}
@@ -105,7 +112,7 @@ export default function Navbar() {
               <Link
                 to="/consultation"
                 data-testid="mobile-nav-book"
-                className="mt-6 inline-flex items-center bg-[#0B0B0D] text-[#F7F5F2] px-6 py-4 text-[11px] tracking-[0.22em] uppercase w-fit"
+                className="mt-6 inline-flex items-center bg-[#171717] text-white px-6 py-4 text-[11px] tracking-[0.22em] uppercase w-fit"
               >
                 Book Consultation
               </Link>
@@ -115,4 +122,6 @@ export default function Navbar() {
       </AnimatePresence>
     </header>
   );
-}
+});
+
+export default Navbar;

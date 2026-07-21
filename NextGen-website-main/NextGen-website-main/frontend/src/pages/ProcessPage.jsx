@@ -17,9 +17,9 @@ export default function ProcessPage() {
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Process</div>
           <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-4xl">
-            Six stages. <em className="text-[#6D4C41]">Unhurried by design.</em>
+            Six stages. <em className="text-[#707070]">Unhurried by design.</em>
           </h1>
-          <p className="mt-8 max-w-2xl text-base md:text-lg leading-relaxed text-[#1B1D22]/80">
+          <p className="mt-8 max-w-2xl text-base md:text-lg leading-relaxed text-[#1E1E1E]/80">
             We have refined this process across two hundred and forty projects. It is the architecture behind the architecture.
           </p>
         </FadeIn>
@@ -35,9 +35,9 @@ export default function ProcessPage() {
                 </div>
               </div>
               <div className={`md:col-span-5 ${i % 2 === 1 ? "md:col-start-1" : "md:col-start-8"}`}>
-                <div className="font-serif text-7xl md:text-9xl text-[#C9A86A] font-light mb-6 leading-none">{s.n}</div>
+                <div className="font-serif text-7xl md:text-9xl text-[#C8A46A] font-light mb-6 leading-none">{s.n}</div>
                 <h2 className="font-serif text-4xl md:text-5xl font-light mb-6">{s.t}</h2>
-                <p className="text-base md:text-lg leading-relaxed text-[#1B1D22]/80 max-w-md">{s.d}</p>
+                <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/80 max-w-md">{s.d}</p>
               </div>
             </FadeIn>
           ))}
@@ -45,9 +45,9 @@ export default function ProcessPage() {
       </section>
 
       <section className="ngi-section ngi-container">
-        <div className="bg-[#0B0B0D] text-[#F7F5F2] p-12 md:p-20 ngi-grain">
+        <div className="bg-[#171717] text-white p-12 md:p-20 ngi-grain">
           <h2 className="font-serif text-3xl md:text-5xl font-light max-w-2xl">Ready to begin?</h2>
-          <Link to="/consultation" className="inline-flex mt-8 bg-[#C9A86A] text-[#0B0B0D] hover:bg-[#F7F5F2] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
+          <Link to="/consultation" className="inline-flex mt-8 bg-[#C8A46A] text-white hover:bg-[#D6B27A] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
             Book a Consultation →
           </Link>
         </div>

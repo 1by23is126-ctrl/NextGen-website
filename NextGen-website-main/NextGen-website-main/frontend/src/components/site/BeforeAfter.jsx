@@ -68,30 +68,29 @@ export default function BeforeAfter({ before, after, labelBefore = "Before", lab
       onTouchStart={onDown}
       onTouchMove={onMove}
       onTouchEnd={onUp}
-      className="relative w-full aspect-[16/10] overflow-hidden select-none cursor-ew-resize bg-[#0B0B0D]"
+      className="relative w-full aspect-[16/10] overflow-hidden select-none cursor-ew-resize bg-[#171717]"
     >
       <img src={after} alt={labelAfter} className="absolute inset-0 w-full h-full object-cover" />
       <div
         className="absolute inset-0 overflow-hidden"
-        style={{ width: `${pos}%`, transition: "width 0.08s ease-out" }}
+        style={{ clipPath: `inset(0 ${100 - pos}% 0 0)`, transition: "clip-path 0.08s ease-out" }}
       >
         <img
           src={before}
           alt={labelBefore}
-          className="absolute inset-0 h-full object-cover"
-          style={{ width: `${100 / (pos / 100)}%`, maxWidth: "none", transition: "width 0.08s ease-out" }}
+          className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
       <div
-        className="absolute top-0 bottom-0 w-px bg-[#F7F5F2] shadow-[0_0_0_1px_rgba(11,11,13,0.3)]"
+        className="absolute top-0 bottom-0 w-px bg-[#F6F4F1] shadow-[0_0_0_1px_rgba(11,11,13,0.3)]"
         style={{ left: `${pos}%` }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-[#F7F5F2] border border-[#0B0B0D]/20 flex items-center justify-center">
-          <span className="text-[#0B0B0D] text-xs tracking-widest">↔</span>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-[#F6F4F1] border border-[#171717]/20 flex items-center justify-center">
+          <span className="text-[#171717] text-xs tracking-widest">↔</span>
         </div>
       </div>
-      <div className="absolute top-4 left-4 text-[10px] tracking-[0.24em] uppercase text-[#F7F5F2] bg-[#0B0B0D]/60 px-3 py-1.5">{labelBefore}</div>
-      <div className="absolute top-4 right-4 text-[10px] tracking-[0.24em] uppercase text-[#F7F5F2] bg-[#0B0B0D]/60 px-3 py-1.5">{labelAfter}</div>
+      <div className="absolute top-4 left-4 text-[10px] tracking-[0.24em] uppercase text-white bg-[#171717]/60 px-3 py-1.5">{labelBefore}</div>
+      <div className="absolute top-4 right-4 text-[10px] tracking-[0.24em] uppercase text-white bg-[#171717]/60 px-3 py-1.5">{labelAfter}</div>
     </div>
   );
 }
