@@ -79,7 +79,7 @@
         @apply bg-background text-foreground antialiased;
         font-family: "Manrope", "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background-color: var(--ngi-ivory);
-        background-image: radial-gradient(circle at top left, rgba(179, 139, 89, 0.06), transparent 30%), linear-gradient(180deg, #f9f6f1 0%, #f7f4ef 100%);
+        background-image: linear-gradient(180deg, #f9f6f1 0%, #f7f4ef 100%);
         color: var(--ngi-graphite);
         font-feature-settings: "ss01", "cv11";
     }
@@ -101,7 +101,7 @@
     background: var(--ngi-surface);
     border: 1px solid var(--ngi-stone);
     border-radius: 24px;
-    box-shadow: 0 16px 45px var(--ngi-shadow);
+    box-shadow: 0 10px 30px rgba(45, 42, 38, 0.06);
 }
 
 .ngi-card-hover {
@@ -109,9 +109,9 @@
 }
 
 .ngi-card-hover:hover {
-    transform: translateY(-4px);
-    border-color: rgba(200, 164, 106, 0.4);
-    box-shadow: 0 24px 70px rgba(23, 23, 23, 0.12);
+    transform: translateY(-2px);
+    border-color: rgba(200, 164, 106, 0.28);
+    box-shadow: 0 16px 40px rgba(23, 23, 23, 0.08);
 }
 
 .ngi-button-primary {
@@ -139,6 +139,58 @@
     border-color: var(--ngi-gold);
 }
 
+.ngi-page-hero {
+    @apply ngi-container py-16 md:py-24 lg:py-28;
+}
+
+.ngi-page-title {
+    @apply font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-5xl;
+}
+
+.ngi-page-title-lg {
+    @apply font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tighter leading-[0.98] max-w-5xl;
+}
+
+.ngi-section-heading {
+    @apply font-serif text-3xl md:text-4xl lg:text-5xl font-light tracking-tight leading-tight;
+}
+
+.ngi-page-body {
+    @apply text-base md:text-lg leading-relaxed text-[#1E1E1E]/80;
+}
+
+.ngi-page-label {
+    @apply text-[10px] tracking-[0.22em] uppercase text-[#707070];
+}
+
+.ngi-button-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-[#171717] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase text-white transition-colors duration-300 hover:bg-[#B38B59];
+}
+
+.ngi-button-accent {
+    @apply inline-flex items-center justify-center rounded-full bg-[#B38B59] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase text-white transition-colors duration-300 hover:bg-[#C49A66];
+}
+
+.ngi-button-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-[#171717]/20 px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase text-[#171717] transition-colors duration-300 hover:border-[#B38B59] hover:text-[#B38B59] hover:bg-[#B38B59]/5;
+}
+
+.ngi-input,
+.ngi-textarea {
+    @apply w-full border-b border-[#E7E2DA] bg-transparent px-0 py-3 text-base md:text-lg text-[#171717] placeholder:text-[#707070] outline-none transition-colors duration-300 focus:border-[#B38B59];
+}
+
+.ngi-textarea {
+    @apply resize-none;
+}
+
+.ngi-panel {
+    background: var(--ngi-surface);
+    border: 1px solid var(--ngi-stone);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(45, 42, 38, 0.06);
+}
+
 /* Lenis */
 html.lenis,
 html.lenis body {
@@ -159,7 +211,7 @@ html.lenis body {
 
 /* Utility classes */
 .ngi-container {
-    @apply px-6 md:px-12 lg:px-24 mx-auto max-w-[1680px];
+    @apply px-6 md:px-10 lg:px-16 mx-auto max-w-[1440px];
 }
 .ngi-section {
     @apply py-24 md:py-32 lg:py-40;
@@ -194,7 +246,7 @@ html.lenis body {
     background: currentColor;
     transform: scaleX(0);
     transform-origin: right;
-    transition: transform 600ms cubic-bezier(0.77, 0, 0.18, 1);
+    transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .ngi-link-underline:hover::after {
     transform: scaleX(1);
@@ -251,10 +303,10 @@ html.lenis body {
     overflow: hidden;
 }
 .ngi-image-zoom img {
-    transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .ngi-image-zoom:hover img {
-    transform: scale(1.06);
+    transform: scale(1.03);
 }
 
 input:-webkit-autofill,

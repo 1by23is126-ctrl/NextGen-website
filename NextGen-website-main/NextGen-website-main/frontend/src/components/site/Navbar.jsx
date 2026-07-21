@@ -72,7 +72,7 @@ const Navbar = memo(function Navbar() {
           <Link
             to="/consultation"
             data-testid="nav-book-cta"
-            className="hidden md:inline-flex items-center rounded-full bg-[#2D2A26] text-white px-6 py-3 text-[11px] tracking-[0.22em] uppercase hover:bg-[#B38B59] hover:text-white transition-colors duration-300"
+            className="hidden md:inline-flex ngi-button-primary"
           >
             Book Consultation
           </Link>

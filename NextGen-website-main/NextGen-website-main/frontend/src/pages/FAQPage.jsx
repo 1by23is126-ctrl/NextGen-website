@@ -22,10 +22,10 @@ export default function FAQPage() {
   const categories = Array.from(new Set(FAQS.map((f) => f.cat)));
   return (
     <div data-testid="faq-page" className="pt-28">
-      <section className="ngi-container py-16 md:py-24">
+      <section className="ngi-page-hero">
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Frequently asked</div>
-          <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-4xl">
+          <h1 className="ngi-page-title max-w-4xl">
             The questions we are <em className="text-[#707070]">often asked</em>.
           </h1>
         </FadeIn>
@@ -50,7 +50,7 @@ export default function FAQPage() {
                 className="w-full text-left py-7 flex items-start justify-between gap-6"
               >
                 <div className="flex-1">
-                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070] mb-2">{f.cat}</div>
+                  <div className="ngi-page-label mb-2">{f.cat}</div>
                   <h3 className="font-serif text-xl md:text-2xl font-light">{f.q}</h3>
                 </div>
                 {open === i ? <Minus size={20} className="text-[#C8A46A] mt-1" /> : <Plus size={20} className="text-[#C8A46A] mt-1" />}
@@ -73,8 +73,8 @@ export default function FAQPage() {
 
       <section className="ngi-section ngi-container">
         <div className="bg-[#171717] text-white p-12 md:p-20 text-center ngi-grain">
-          <h2 className="font-serif text-3xl md:text-5xl font-light max-w-2xl mx-auto">A question we haven't answered?</h2>
-          <Link to="/contact" className="inline-flex mt-8 bg-[#C8A46A] text-white hover:bg-[#D6B27A] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
+          <h2 className="ngi-section-heading max-w-2xl mx-auto">A question we haven't answered?</h2>
+          <Link to="/contact" className="inline-flex mt-8 ngi-button-accent">
             Write to us →
           </Link>
         </div>

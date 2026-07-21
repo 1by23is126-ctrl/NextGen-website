@@ -21,8 +21,8 @@ export default function ServiceDetailPage() {
   if (!service) {
     return (
       <div className="ngi-container pt-40 pb-24" data-testid="service-not-found">
-        <h1 className="font-serif text-5xl">Service not found.</h1>
-        <button onClick={() => navigate("/services")} className="mt-8 underline">Back to services</button>
+        <h1 className="ngi-page-title max-w-none">Service not found.</h1>
+        <button onClick={() => navigate("/services")} className="mt-8 ngi-button-secondary">Back to services</button>
       </div>
     );
   }
@@ -39,10 +39,10 @@ export default function ServiceDetailPage() {
       <section className="ngi-container grid grid-cols-1 md:grid-cols-12 gap-10 items-end mb-16">
         <FadeIn className="md:col-span-7">
           <div className="ngi-overline mb-4"><span className="ngi-rule" />Service · 0{idx + 1}</div>
-          <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02]">{service.title}</h1>
+          <h1 className="ngi-page-title max-w-none">{service.title}</h1>
         </FadeIn>
         <FadeIn className="md:col-span-4 md:col-start-9" delay={0.1}>
-          <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/85">{service.short}</p>
+          <p className="ngi-page-body">{service.short}</p>
         </FadeIn>
       </section>
 
@@ -57,10 +57,10 @@ export default function ServiceDetailPage() {
       <section className="ngi-container grid grid-cols-1 md:grid-cols-12 gap-12 mb-24 md:mb-32">
         <FadeIn className="md:col-span-5">
           <div className="ngi-overline mb-4"><span className="ngi-rule" />Overview</div>
-          <h2 className="font-serif text-3xl md:text-4xl font-light leading-tight">What you get when you work with us on this.</h2>
+          <h2 className="ngi-section-heading">What you get when you work with us on this.</h2>
         </FadeIn>
         <FadeIn className="md:col-span-6 md:col-start-7" delay={0.1}>
-          <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/80">{service.overview}</p>
+          <p className="ngi-page-body">{service.overview}</p>
           <ul className="mt-10 space-y-4">
             {service.benefits.map((b, i) => (
               <li key={i} className="flex gap-4 border-t border-[#171717]/10 pt-4">
@@ -76,7 +76,7 @@ export default function ServiceDetailPage() {
         <div className="ngi-container ngi-section">
           <FadeIn className="mb-12">
             <div className="ngi-overline mb-4"><span className="ngi-rule" />Process</div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light">How a {service.title.toLowerCase()} project moves.</h2>
+            <h2 className="ngi-section-heading">How a {service.title.toLowerCase()} project moves.</h2>
           </FadeIn>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {service.process.map((p, i) => (
@@ -93,7 +93,7 @@ export default function ServiceDetailPage() {
         <FadeIn className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
           <div className="md:col-span-5">
             <div className="ngi-overline mb-4"><span className="ngi-rule" />Common questions</div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light">Questions about this service.</h2>
+            <h2 className="ngi-section-heading">Questions about this service.</h2>
           </div>
         </FadeIn>
         <div className="max-w-3xl border-t border-[#171717]/15">
@@ -155,8 +155,8 @@ export default function ServiceDetailPage() {
 
       <section className="ngi-section ngi-container">
         <div className="bg-[#171717] text-white p-12 md:p-20 ngi-grain">
-          <h2 className="font-serif text-3xl md:text-5xl font-light max-w-2xl">Have a brief? Let's talk it through.</h2>
-          <Link to="/consultation" className="inline-flex mt-8 bg-[#C8A46A] text-white hover:bg-[#D6B27A] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
+          <h2 className="ngi-section-heading max-w-2xl">Have a brief? Let's talk it through.</h2>
+          <Link to="/consultation" className="inline-flex mt-8 ngi-button-accent">
             Book Consultation →
           </Link>
         </div>

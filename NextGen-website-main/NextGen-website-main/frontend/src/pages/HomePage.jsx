@@ -1,11 +1,10 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight, Quote, ChevronDown } from "lucide-react";
+import { ArrowUpRight, Quote } from "lucide-react";
 import { api } from "@/lib/api";
 import { FadeIn } from "@/components/site/Motion";
 import BlueprintToReality from "@/components/site/BlueprintToReality";
-import { SERVICES } from "@/data/services";
 
 const HERO_IMAGES = [
   "https://images.pexels.com/photos/20418771/pexels-photo-20418771.jpeg",
@@ -13,30 +12,54 @@ const HERO_IMAGES = [
   "https://images.pexels.com/photos/34538288/pexels-photo-34538288.jpeg",
 ];
 
+const FEATURED_PROJECTS_FALLBACK = [
+  {
+    slug: "residency-hsr",
+    title: "Residency HSR",
+    category: "Residential",
+    location: "Bengaluru",
+    cover_image: "https://images.pexels.com/photos/13201479/pexels-photo-13201479.jpeg",
+  },
+  {
+    slug: "marine-drive-sanctuary",
+    title: "Marine Drive Sanctuary",
+    category: "Apartment",
+    location: "Mumbai",
+    cover_image: "https://images.pexels.com/photos/34538288/pexels-photo-34538288.jpeg",
+  },
+  {
+    slug: "atelier-office",
+    title: "Atelier Office",
+    category: "Commercial",
+    location: "Pune",
+    cover_image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+  },
+];
+
 const Hero = memo(function Hero() {
   const ref = useRef(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 220]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.06]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.12]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 6000);
+    }, 7000);
     return () => window.clearInterval(timer);
   }, []);
 
   return (
-    <section ref={ref} className="relative h-screen min-h-[680px] overflow-hidden bg-[#171717]" data-testid="home-hero">
+    <section ref={ref} className="relative h-screen min-h-[640px] overflow-hidden bg-[#171717]" data-testid="home-hero">
       <motion.div style={{ scale, y }} className="absolute inset-0 overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.img
             key={HERO_IMAGES[activeSlide]}
             src={HERO_IMAGES[activeSlide]}
             alt="Luxury interior"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover brightness-[0.88] saturate-[0.98] contrast-[1.02]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -46,43 +69,46 @@ const Hero = memo(function Hero() {
             fetchPriority="high"
           />
         </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/30 via-[#171717]/10 to-[#171717]/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/38 via-[#171717]/18 to-[#171717]/74" />
       </motion.div>
 
-      <motion.div style={{ opacity }} className="relative h-full ngi-container flex flex-col justify-end pb-20 md:pb-28">
-        <div className="max-w-4xl">
-          <div className="ngi-overline text-[#B38B59] mb-6 ngi-reveal" style={{ animationDelay: "1.6s" }}>
+      <motion.div style={{ opacity }} className="relative h-full ngi-container flex flex-col justify-end pb-16 md:pb-24">
+        <div className="relative max-w-[44rem] pb-2 md:pb-4">
+          <div className="pointer-events-none absolute -inset-x-8 -inset-y-8 md:-inset-x-12 md:-inset-y-10 bg-gradient-to-r from-[#171717]/42 via-[#171717]/18 to-transparent blur-2xl" />
+          <div className="relative z-10">
+            <div className="ngi-overline text-[#C49A66] mb-6 ngi-reveal" style={{ animationDelay: "1.6s" }}>
             <span className="ngi-rule" />Interior architecture · Est. 2013
           </div>
-          <h1 className="font-serif text-white text-5xl md:text-7xl lg:text-[88px] font-light tracking-tighter leading-[0.95]">
-            <span className="block ngi-reveal" style={{ animationDelay: "1.7s" }}>Crafting timeless</span>
-            <span className="block italic text-[#B38B59] ngi-reveal" style={{ animationDelay: "1.9s" }}>living spaces</span>
-            <span className="block ngi-reveal" style={{ animationDelay: "2.1s" }}>with quiet luxury.</span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-sm md:text-base leading-7 text-white/75 ngi-reveal" style={{ animationDelay: "2.2s" }}>
-            We shape homes and hospitality environments with architectural clarity, tactile materials, and an unwavering commitment to calm, beautiful living.
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 items-start ngi-reveal" style={{ animationDelay: "2.5s" }}>
-            <Link
-              to="/consultation"
-              data-testid="hero-primary-cta"
-              className="inline-flex items-center gap-3 rounded-full magnetic bg-[#B38B59] text-white hover:bg-[#CFA978] px-8 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors duration-300"
-            >
-              Book a Consultation <ArrowUpRight size={16} />
-            </Link>
-            <Link
-              to="/portfolio"
-              data-testid="hero-secondary-cta"
-              className="inline-flex items-center gap-3 rounded-full border border-white/35 text-white hover:bg-[#B38B59] hover:border-[#B38B59] hover:text-white px-8 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors duration-300"
-            >
-              View Portfolio
-            </Link>
+            <h1 className="font-serif text-white text-5xl md:text-6xl lg:text-[80px] font-light tracking-tighter leading-[0.96] [text-shadow:0_1px_10px_rgba(0,0,0,0.18)]">
+              <span className="block ngi-reveal" style={{ animationDelay: "1.7s" }}>Crafting timeless</span>
+              <span className="block italic text-[#C49A66] ngi-reveal" style={{ animationDelay: "1.9s" }}>living spaces</span>
+              <span className="block ngi-reveal" style={{ animationDelay: "2.1s" }}>with quiet luxury.</span>
+            </h1>
+            <p className="mt-8 max-w-lg text-sm md:text-base leading-7 text-[#F7F4EF] ngi-reveal [text-shadow:0_1px_6px_rgba(0,0,0,0.16)]" style={{ animationDelay: "2.2s" }}>
+              We shape homes and hospitality environments with architectural clarity, tactile materials, and an unwavering commitment to calm, beautiful living.
+            </p>
+            <div className="mt-12 flex flex-col sm:flex-row gap-4 items-start ngi-reveal" style={{ animationDelay: "2.5s" }}>
+              <Link
+                to="/consultation"
+                data-testid="hero-primary-cta"
+                className="inline-flex items-center gap-3 rounded-full border border-[#C49A66] bg-[#C49A66] px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase text-white transition-colors duration-300 hover:bg-[#D0AA72]"
+              >
+                Book a Consultation <ArrowUpRight size={16} />
+              </Link>
+              <Link
+                to="/portfolio"
+                data-testid="hero-secondary-cta"
+                className="inline-flex items-center gap-3 rounded-full border border-white/24 px-7 py-3.5 text-[11px] tracking-[0.22em] uppercase text-white transition-colors duration-300 hover:border-white/40 hover:bg-white/6"
+              >
+                View Portfolio
+              </Link>
+            </div>
           </div>
         </div>
       </motion.div>
 
       <div
-        className="absolute bottom-6 right-6 md:right-12 text-white/70 text-[10px] tracking-[0.3em] uppercase rotate-0 flex items-center gap-3 ngi-reveal"
+        className="absolute bottom-6 right-6 md:right-10 text-white/58 text-[10px] tracking-[0.28em] uppercase rotate-0 flex items-center gap-3 ngi-reveal"
         style={{ animationDelay: "2.6s" }}
       >
         <span>Scroll</span>
@@ -92,125 +118,47 @@ const Hero = memo(function Hero() {
   );
 });
 
-const StatsStrip = memo(function StatsStrip() {
-  const stats = useMemo(() => [
-    { value: "13+", label: "Years of practice" },
-    { value: "180", label: "Spaces completed" },
-    { value: "4", label: "Design disciplines" },
-    { value: "98%", label: "Repeat clientele" },
-  ], []);
-
-  return (
-    <section className="ngi-container -mt-8 pb-16 md:pb-24">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 rounded-[28px] border border-[#EFE7DC] bg-white/80 p-4 shadow-[0_18px_50px_rgba(45,42,38,0.05)] backdrop-blur">
-        {stats.map((stat) => (
-          <div key={stat.label} className="rounded-[20px] bg-[#F7F4EF] px-5 py-6 text-center">
-            <div className="font-serif text-3xl md:text-4xl text-[#2D2A26]">{stat.value}</div>
-            <div className="mt-2 text-[10px] uppercase tracking-[0.24em] text-[#6E675F]">{stat.label}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-});
-
 const FeaturedProjects = memo(function FeaturedProjects({ projects }) {
-  if (!projects.length) return null;
+  const featuredProjects = projects.length ? projects : FEATURED_PROJECTS_FALLBACK;
+
   return (
     <section className="ngi-section ngi-container" data-testid="home-featured">
-      <FadeIn className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+      <FadeIn className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-14 md:mb-16">
         <div>
           <div className="ngi-overline mb-4"><span className="ngi-rule" />Selected Works</div>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight max-w-2xl">
+          <h2 className="max-w-2xl font-serif text-4xl font-light tracking-tight leading-tight md:text-5xl lg:text-[3.6rem]">
             Each project, an answer to a question only the client could ask.
           </h2>
         </div>
-        <Link to="/portfolio" className="ngi-link-underline text-sm tracking-wider uppercase text-[#171717]">
+        <Link to="/portfolio" className="ngi-link-underline text-[11px] tracking-[0.22em] uppercase text-[#171717]/78 hover:text-[#171717]">
           All projects →
         </Link>
       </FadeIn>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10">
-        {projects.slice(0, 3).map((p, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        {featuredProjects.slice(0, 3).map((p, i) => (
           <FadeIn
             key={p.slug}
-            delay={i * 0.1}
-            className={
-              i === 0
-                ? "md:col-span-7 md:row-span-2"
-                : i === 1
-                ? "md:col-span-5 md:mt-24"
-                : "md:col-span-7 md:col-start-6 md:-mt-12"
-            }
+            delay={i * 0.08}
+            className="h-full"
           >
-            <Link to={`/portfolio/${p.slug}`} className="group block">
-              <div className="ngi-image-zoom aspect-[4/5] md:aspect-[4/5] bg-[#E7E2DA]">
-                <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+            <Link to={`/portfolio/${p.slug}`} className="group block h-full flex flex-col">
+              <div className="ngi-image-zoom aspect-[4/3] bg-[#E7E2DA] overflow-hidden rounded-[24px] border border-[#E9E2D8] shadow-[0_10px_28px_rgba(45,42,38,0.06)] transition-shadow duration-500 group-hover:shadow-[0_16px_36px_rgba(45,42,38,0.09)] flex-shrink-0">
+                <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" decoding="async" />
               </div>
-              <div className="flex items-end justify-between mt-5">
+              <div className="mt-5 flex flex-grow flex-col justify-between">
                 <div>
-                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">{p.category} · {p.location}</div>
-                  <h3 className="font-serif text-2xl md:text-3xl mt-2 group-hover:text-[#707070] transition-colors">{p.title}</h3>
+                  <div className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#9A9399]">{p.category} · {p.location}</div>
+                  <h3 className="mt-3 font-serif text-xl leading-tight transition-colors duration-300 group-hover:text-[#B38B59] md:text-[1.7rem]">{p.title}</h3>
                 </div>
-                <ArrowUpRight size={20} className="text-[#171717] group-hover:text-[#C8A46A] transition-colors" />
+                <div className="mt-4 flex items-center gap-2 text-[#171717]/74 transition-colors duration-300 group-hover:text-[#171717]">
+                  <span className="text-[11px] font-medium uppercase tracking-[0.18em]">View project</span>
+                  <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:translate-x-[2px] group-hover:-translate-y-[2px]" />
+                </div>
               </div>
             </Link>
           </FadeIn>
         ))}
-      </div>
-    </section>
-  );
-});
-
-const MeetTheStudio = memo(function MeetTheStudio() {
-  return (
-    <section className="bg-[#F6F4F1] border-y border-[#E7E2DA]" data-testid="home-studio">
-      <div className="ngi-container ngi-section grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-        <FadeIn className="md:col-span-5">
-          <div className="aspect-[4/5] overflow-hidden border border-[#171717]/10">
-            <img 
-              src="https://images.pexels.com/photos/34538288/pexels-photo-34538288.jpeg" 
-              alt="Studio workspace" 
-              className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </FadeIn>
-        <FadeIn className="md:col-span-6 md:col-start-7" delay={0.1}>
-          <div className="ngi-overline mb-4"><span className="ngi-rule" />Meet the Studio</div>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-snug mb-8">
-            Thirteen people, one obsession: <em className="text-[#707070]">considered interiors.</em>
-          </h2>
-          
-          <div className="space-y-6 mb-10">
-            <p className="text-base md:text-lg leading-relaxed text-[#171717]/80">
-              NextGen Interiors is based in Bengaluru. We design residential and commercial interiors across India. What unites us isn't location—it's an unwavering commitment to detail and a belief that spaces should feel inevitable, not trendy.
-            </p>
-            
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="text-[11px] tracking-[0.22em] uppercase text-[#C8A46A] font-medium whitespace-nowrap">Design-Led</div>
-                <p className="text-sm text-[#171717]/70">Every project is guided by senior architects from first sketch to final handover.</p>
-              </div>
-              <div className="flex gap-4">
-                <div className="text-[11px] tracking-[0.22em] uppercase text-[#C8A46A] font-medium whitespace-nowrap">Material First</div>
-                <p className="text-sm text-[#171717]/70">We review finishes in our studio under daylight and lamplight, never from a catalogue.</p>
-              </div>
-              <div className="flex gap-4">
-                <div className="text-[11px] tracking-[0.22em] uppercase text-[#C8A46A] font-medium whitespace-nowrap">Built to Age</div>
-                <p className="text-sm text-[#171717]/70">A five-year remedial visit programme ensures every project ages beautifully with you.</p>
-              </div>
-            </div>
-          </div>
-
-          <Link 
-            to="/about" 
-            className="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-[#171717] ngi-link-underline hover:text-[#C8A46A] transition-colors"
-          >
-            Learn more about us →
-          </Link>
-        </FadeIn>
       </div>
     </section>
   );
@@ -218,284 +166,261 @@ const MeetTheStudio = memo(function MeetTheStudio() {
 
 const PhilosophySection = memo(function PhilosophySection() {
   return (
-    <section className="ngi-section ngi-container" data-testid="home-philosophy">
-      <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
+    <section className="ngi-container pt-24 md:pt-32 lg:pt-40 pb-0" data-testid="home-philosophy">
+      <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14">
         <FadeIn>
           <div className="ngi-overline mb-4"><span className="ngi-rule" />Design Philosophy</div>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight max-w-3xl">
+          <h2 className="max-w-3xl font-serif text-4xl font-light tracking-tight leading-tight md:text-5xl lg:text-[3.6rem]">
             A home should feel as enduring as it is beautiful.
           </h2>
-          <p className="mt-8 max-w-2xl text-base md:text-lg leading-8 text-[#6E675F]">
+          <p className="mt-7 max-w-xl text-base leading-8 text-[#6E675F] md:text-lg">
             We design with restraint and intention, allowing architecture, natural light, and materials to do the talking. The result is a space that feels effortless, collected, and quietly luxurious.
           </p>
         </FadeIn>
         <FadeIn delay={0.1}>
-          <div className="rounded-[32px] border border-[#EFE7DC] bg-white p-8 shadow-[0_20px_60px_rgba(45,42,38,0.06)]">
-            <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.24em] text-[#B38B59]">
-              <span className="h-px w-10 bg-[#B38B59]" />Studio principle
+          <div className="rounded-[28px] border border-[#DDD5CB] bg-white p-8 shadow-[0_10px_30px_rgba(45,42,38,0.06)] md:p-10">
+            <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.24em] text-[#C8A46A] mb-7">
+              <span className="h-px w-10 bg-[#C8A46A]" />Studio Principle
             </div>
-            <blockquote className="mt-6 font-serif text-2xl md:text-3xl leading-relaxed text-[#2D2A26]">
+            <blockquote className="mb-9 font-serif text-2xl leading-relaxed text-[#171717] md:text-[2rem]">
               “Every room should feel like it has been waiting for its inhabitants all along.”
             </blockquote>
-            <div className="mt-8 space-y-4">
-              <div className="flex items-center justify-between border-b border-[#EFE7DC] pb-3 text-sm text-[#6E675F]">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-[#D8D2CA] pb-4 text-sm text-[#5A5450]">
                 <span>Material-first approach</span>
-                <span>01</span>
+                <span className="text-xs text-[#9A9399]">01</span>
               </div>
-              <div className="flex items-center justify-between border-b border-[#EFE7DC] pb-3 text-sm text-[#6E675F]">
+              <div className="flex items-center justify-between border-b border-[#D8D2CA] pb-4 text-sm text-[#5A5450]">
                 <span>Architecture-led detailing</span>
-                <span>02</span>
+                <span className="text-xs text-[#9A9399]">02</span>
               </div>
-              <div className="flex items-center justify-between text-sm text-[#6E675F]">
+              <div className="flex items-center justify-between text-sm text-[#5A5450]">
                 <span>Long-term stewardship</span>
-                <span>03</span>
+                <span className="text-xs text-[#9A9399]">03</span>
               </div>
             </div>
           </div>
         </FadeIn>
-      </div>
-    </section>
-  );
-});
-
-const ServicesOverview = memo(function ServicesOverview() {
-  const premiumServices = useMemo(() => [
-    SERVICES[0], // Residential Interiors
-    SERVICES[1], // Commercial Interiors
-    { ...SERVICES[2], slug: "turnkey-solutions", title: "Turnkey Solutions", short: "Complete project management from concept to handover." }, // Modular Kitchens → Turnkey
-    SERVICES[7], // Renovation
-  ], []);
-
-  return (
-    <section className="ngi-section ngi-container" data-testid="home-services">
-      <FadeIn className="mb-16">
-        <div className="ngi-overline mb-4"><span className="ngi-rule" />Four Premium Services</div>
-        <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight max-w-3xl">
-          Four disciplines. One studio. Infinite possibilities.
-        </h2>
-      </FadeIn>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-        {premiumServices.map((s, i) => (
-          <FadeIn key={s.slug} delay={i * 0.08}>
-            <Link to={`/services/${s.slug}`} className="group block">
-              <div className="relative overflow-hidden rounded-[22px] border border-[#E7E2DA] bg-white shadow-[0_18px_50px_rgba(23,23,23,0.06)] transition-all duration-500 hover:-translate-y-1 hover:border-[#C8A46A]/40 hover:shadow-[0_24px_70px_rgba(23,23,23,0.10)]">
-                {/* Service image with zoom effect */}
-                <div className="relative h-64 md:h-80 overflow-hidden bg-[#E7E2DA]">
-                  <img
-                    src={s.image}
-                    alt={s.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                </div>
-
-                {/* Service content */}
-                <div className="p-8">
-                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#C8A46A] mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    Service
-                  </div>
-                  <h3 className="font-serif text-2xl md:text-3xl font-light mb-3 group-hover:text-[#C8A46A] transition-colors duration-300">
-                    {s.title}
-                  </h3>
-                  <p className="text-sm text-[#171717]/70 leading-relaxed mb-6">{s.short}</p>
-
-                  {/* CTA - plain CSS transition instead of a motion.div for a hover-only shift */}
-                  <div className="flex items-center gap-3 text-sm tracking-wider uppercase text-[#171717] group-hover:text-[#C8A46A] transition-colors duration-300">
-                    <span>Explore</span>
-                    <span className="inline-block opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
-                      <ArrowUpRight size={16} />
-                    </span>
-                  </div>
-                </div>
-
-                {/* Border accent - plain CSS transition, same as the CTA above */}
-                <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute top-0 left-0 h-px w-0 bg-gradient-to-r from-transparent to-[#C8A46A] group-hover:w-full transition-all duration-500" />
-                  <div className="absolute bottom-0 right-0 h-px w-0 bg-gradient-to-l from-transparent to-[#C8A46A] group-hover:w-full transition-all duration-500" />
-                </div>
-              </div>
-            </Link>
-          </FadeIn>
-        ))}
-      </div>
-
-      {/* Link to full services */}
-      <FadeIn delay={0.4} className="mt-16 text-center">
-        <Link to="/services" className="inline-flex items-center gap-3 text-sm tracking-wider uppercase text-[#171717] ngi-link-underline">
-          Explore All Services <ArrowUpRight size={16} />
-        </Link>
-      </FadeIn>
-    </section>
-  );
-});
-
-const GalleryMasonry = memo(function GalleryMasonry() {
-  const images = useMemo(() => [
-    { src: "https://images.pexels.com/photos/20418771/pexels-photo-20418771.jpeg", alt: "Calm contemporary living room" },
-    { src: "https://images.pexels.com/photos/34538288/pexels-photo-34538288.jpeg", alt: "Layered warm interior detail" },
-    { src: "https://images.pexels.com/photos/13201479/pexels-photo-13201479.jpeg", alt: "Luxury dining environment" },
-    { src: "https://images.pexels.com/photos/13219418/pexels-photo-13219418.jpeg", alt: "Architectural lighting composition" },
-  ], []);
-
-  return (
-    <section className="ngi-section ngi-container" data-testid="home-gallery">
-      <FadeIn className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-        <div>
-          <div className="ngi-overline mb-4"><span className="ngi-rule" />Studio Gallery</div>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight max-w-2xl">
-            An atmosphere of considered comfort.
-          </h2>
-        </div>
-        <div className="max-w-xl text-sm md:text-base leading-7 text-[#6E675F]">
-          Quietly layered spaces, sculptural forms, and tactile finishes designed to feel timeless from day one.
-        </div>
-      </FadeIn>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {images.map((image, index) => (
-          <div key={image.src} className={`overflow-hidden rounded-[28px] border border-[#EFE7DC] bg-white shadow-[0_18px_50px_rgba(45,42,38,0.05)] ${index === 0 || index === 2 ? "md:translate-y-8" : ""}`}>
-            <img src={image.src} alt={image.alt} className="h-72 w-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" decoding="async" />
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-});
-
-const FAQSection = memo(function FAQSection() {
-  const faqs = useMemo(() => [
-    { question: "How do you approach a new project?", answer: "We begin with an exploratory conversation, develop a spatial narrative, and then translate it into a layered design language that feels calm and enduring." },
-    { question: "Do you work across residential and commercial spaces?", answer: "Yes. Our practice spans private residences, boutique hospitality, and workplace interiors with the same level of detail and care." },
-    { question: "Can you assist with renovations?", answer: "Absolutely. We guide projects from concept through construction, including sensitive renovations that refresh an existing home or property." },
-  ], []);
-
-  return (
-    <section className="ngi-section ngi-container" data-testid="home-faq">
-      <div className="rounded-[32px] border border-[#EFE7DC] bg-white/80 p-8 md:p-12 shadow-[0_20px_60px_rgba(45,42,38,0.06)]">
-        <FadeIn className="max-w-3xl">
-          <div className="ngi-overline mb-4"><span className="ngi-rule" />Frequently Asked</div>
-          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight">
-            A few answers before we begin.
-          </h2>
-        </FadeIn>
-
-        <div className="mt-10 space-y-4">
-          {faqs.map((item, index) => (
-            <details key={item.question} className="group rounded-[20px] border border-[#EFE7DC] bg-[#F7F4EF] px-6 py-5" open={index === 0}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-medium text-[#2D2A26]">
-                <span>{item.question}</span>
-                <ChevronDown size={18} className="shrink-0 text-[#B38B59] transition-transform duration-300 group-open:rotate-180" />
-              </summary>
-              <p className="mt-4 pr-8 text-sm leading-7 text-[#6E675F]">{item.answer}</p>
-            </details>
-          ))}
-        </div>
       </div>
     </section>
   );
 });
 
 const Testimonials = memo(function Testimonials() {
-  const testimonials = useMemo(() => [
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({ 
+    target: sectionRef, 
+    offset: ["start end", "end start"] 
+  });
+  const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.5, 0.5, 0]);
+
+  const testimonials = [
     {
       quote: "They listened more than they spoke. The result is a home that feels like us—only more composed.",
       author: "Aarav & Ishita Menon",
-      role: "Homeowners · Bengaluru",
-      projectName: "Residency HSR",
-      projectImage: "https://images.pexels.com/photos/13201479/pexels-photo-13201479.jpeg",
+      role: "Homeowners",
+      location: "Bengaluru",
+      project: "Residency HSR",
+      image: "https://images.pexels.com/photos/13201479/pexels-photo-13201479.jpeg",
     },
     {
       quote: "Every evening the apartment seems to exhale. That is the design.",
       author: "Karan Shroff",
-      role: "Homeowner · Mumbai",
-      projectName: "Marine Drive Sanctuary",
-      projectImage: "https://images.pexels.com/photos/34538288/pexels-photo-34538288.jpeg",
+      role: "Homeowner",
+      location: "Mumbai",
+      project: "Marine Drive Sanctuary",
+      image: "https://images.pexels.com/photos/34538288/pexels-photo-34538288.jpeg",
     },
-    {
-      quote: "Our team writes better proposals here. That is not a metaphor.",
-      author: "Studio Principal",
-      role: "Creative Studio · Pune",
-      projectName: "Design Atelier",
-      projectImage: "https://images.pexels.com/photos/13219418/pexels-photo-13219418.jpeg",
-    },
-    {
-      quote: "The room does half the hospitality for us.",
-      author: "Founders, Terra",
-      role: "Restaurant · Goa",
-      projectName: "Terra Restaurant",
-      projectImage: "https://images.unsplash.com/photo-1517299033323-8f60b40141f1?w=1200",
-    },
-  ], []);
+  ];
 
   return (
-    <section className="ngi-section ngi-container" data-testid="home-testimonials">
-      <FadeIn className="mb-16">
-        <div className="ngi-overline mb-4"><span className="ngi-rule" />From Our Clients</div>
-        <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight max-w-3xl">
-          Words from the people we've designed for.
-        </h2>
-      </FadeIn>
+    <section 
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[#F7F4EF] py-24 md:py-32 lg:py-36" 
+      data-testid="home-testimonials"
+    >
+      <motion.div 
+        style={{ y, opacity }}
+        className="absolute top-20 right-0 h-[440px] w-[440px] rounded-full bg-[#C8A46A]/8 blur-3xl pointer-events-none"
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
-        {testimonials.map((t, i) => (
-          <FadeIn key={t.author} delay={i * 0.08}>
-            <div className="group rounded-[22px] border border-[#E7E2DA] bg-white overflow-hidden shadow-[0_18px_50px_rgba(23,23,23,0.06)] hover:-translate-y-1 hover:border-[#C8A46A]/30 hover:shadow-[0_24px_70px_rgba(23,23,23,0.10)] transition-all duration-500">
-              {/* Project image with overlay */}
-              <div className="relative h-48 overflow-hidden bg-[#E7E2DA]">
-                <img
-                  src={t.projectImage}
-                  alt={t.projectName}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/60 via-[#171717]/20 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#C8A46A]">{t.projectName}</div>
-                </div>
-              </div>
+      <div className="ngi-container relative z-10">
+        <FadeIn className="mx-auto mb-16 max-w-3xl text-center md:mb-20">
+          <div className="ngi-overline mb-6">
+            <span className="ngi-rule" />In Their Words
+          </div>
+          <h2 className="mb-7 font-serif text-4xl font-light tracking-tight leading-[1.06] md:text-5xl lg:text-[3.7rem]">
+            Designing homes that feel like a quiet conversation with oneself.
+          </h2>
+          <p className="mx-auto max-w-2xl text-base leading-8 text-[#6E675F] md:text-lg">
+            Our work is best described by the people who live in the spaces we create.
+          </p>
+        </FadeIn>
 
-              {/* Testimonial content */}
-              <div className="p-8 bg-white">
-                <Quote size={24} className="text-[#C8A46A] mb-6" strokeWidth={1.2} />
-                <p className="font-serif text-lg md:text-xl leading-relaxed text-[#171717] mb-8">
-                  "{t.quote}"
-                </p>
-                <div className="border-t border-[#171717]/10 pt-6">
-                  <div className="text-[11px] tracking-[0.22em] uppercase text-[#171717] font-medium">{t.author}</div>
-                  <div className="text-xs text-[#171717]/60 mt-1">{t.role}</div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+          {testimonials.map((t, i) => (
+            <FadeIn key={i} delay={i * 0.15}>
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                className="group relative"
+              >
+                <div className="relative overflow-hidden rounded-[28px] border border-[#E5DDD2] bg-white shadow-[0_12px_32px_rgba(45,42,38,0.06)] transition-shadow duration-500 group-hover:shadow-[0_16px_36px_rgba(45,42,38,0.08)]">
+                  <div className="relative h-64 overflow-hidden md:h-72">
+                    <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/50 via-black/14 to-transparent" />
+                    <img
+                      src={t.image}
+                      alt={t.project}
+                      className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div className="absolute bottom-5 left-5 z-20">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-white/16 bg-black/18 px-3 py-1.5 backdrop-blur-sm">
+                        <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-white">{t.project}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-7 md:p-8">
+                    <Quote size={28} className="mb-5 text-[#C8A46A]" strokeWidth={1.2} />
+                    
+                    <p className="mb-7 font-serif text-xl leading-relaxed text-[#171717] md:text-[1.65rem]">
+                      "{t.quote}"
+                    </p>
+                    
+                    <div className="flex items-center gap-4 border-t border-[#E7E2DA] pt-5">
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#F4EEE4]">
+                        <span className="text-sm font-serif text-[#B38B59]">{t.author.split(' ').map(n => n[0]).join('')}</span>
+                      </div>
+                      <div className="flex-grow">
+                        <div className="text-sm font-medium text-[#171717]">{t.author}</div>
+                        <div className="text-xs text-[#9A9399] mt-1">{t.role} · {t.location}</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </FadeIn>
-        ))}
+              </motion.div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={0.4}>
+          <div className="mt-14 text-center">
+            <Link 
+              to="/testimonials" 
+              className="group inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.22em] text-[#171717]/78 transition-colors duration-300 hover:text-[#171717]"
+            >
+              <span>View All Client Stories</span>
+              <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:translate-x-[2px] group-hover:-translate-y-[2px]" />
+            </Link>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
 });
 
 const ConsultationCTA = memo(function ConsultationCTA() {
+  const sectionRef = useRef(null);
+
   return (
-    <section className="ngi-section ngi-container" data-testid="home-cta">
-      <FadeIn className="bg-[#171717] text-white px-8 md:px-16 lg:px-24 py-20 md:py-28 lg:py-32 relative ngi-grain border border-[#C8A46A]/15 shadow-[0_20px_60px_rgba(23,23,23,0.12)]">
-        <div className="ngi-overline text-[#C8A46A] mb-6"><span className="ngi-rule" />Ready to Begin</div>
-        <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.05] max-w-4xl mb-6">
-          Tell us about the space you're imagining.
-        </h2>
-        <p className="mt-8 text-white/75 max-w-xl text-base md:text-lg leading-relaxed">
-          Ninety minutes, in our studio or yours. No presentations, no sales—just a conversation between the people who will design your space and the people who will live in it.
-        </p>
-        <Link
-          to="/consultation"
-          data-testid="home-cta-book"
-          className="inline-flex items-center gap-3 mt-12 magnetic bg-[#C8A46A] text-white hover:bg-[#D6B27A] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors duration-300"
-        >
-          Book Your Consultation <ArrowUpRight size={16} />
-        </Link>
-      </FadeIn>
+    <section 
+      ref={sectionRef}
+      className="relative overflow-hidden py-20 md:py-24 lg:py-28" 
+      data-testid="home-cta"
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1B1917] to-[#141414]" />
+
+      <div className="ngi-container relative z-10">
+        <FadeIn className="relative mx-auto w-full max-w-[880px]">
+          <div className="relative mx-auto overflow-hidden rounded-[10px] border border-white/8 bg-white/[0.035] px-6 py-8 shadow-[0_18px_42px_rgba(15,15,15,0.2)] sm:px-10 sm:py-10 md:px-12 md:py-12 lg:px-14 lg:py-12">
+            <div className="relative z-10 mx-auto flex max-w-[760px] flex-col items-center text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  <div className="ngi-overline mb-6 flex justify-center text-[#C8A46A]">
+                    <span className="ngi-rule" />Ready to Begin Your Journey
+                  </div>
+                </motion.div>
+
+                <motion.h2 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  className="mb-6 max-w-[12ch] font-serif text-4xl font-light leading-[1.08] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[4rem]"
+                >
+                  Let's design a space that{' '}
+                  <span className="text-[#C8A46A] italic">tells your story</span>.
+                </motion.h2>
+
+                <motion.p 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="mx-auto mb-10 max-w-[44rem] text-base leading-8 text-[#F7F4EF] md:text-lg"
+                >
+                  Schedule a complimentary consultation. Ninety minutes to explore your vision, understand your needs, and discover how we can bring your ideal space to life.
+                </motion.p>
+
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                  className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+                >
+                  <Link
+                    to="/consultation"
+                    data-testid="home-cta-book"
+                    className="group inline-flex items-center gap-3 rounded-full border border-[#B38B59] bg-[#B38B59] px-7 py-4 text-[11px] uppercase tracking-[0.22em] text-white transition-colors duration-300 hover:bg-[#C49A66]"
+                  >
+                    <span className="font-medium">Book Your Consultation</span>
+                    <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:translate-x-[2px] group-hover:-translate-y-[2px]" />
+                  </Link>
+
+                  <Link
+                    to="/portfolio"
+                    className="group inline-flex items-center gap-3 rounded-full border border-white/20 px-7 py-4 text-[11px] uppercase tracking-[0.22em] text-white transition-all duration-300 hover:border-white/36 hover:bg-white/5"
+                  >
+                    <span>Explore Our Work</span>
+                    <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:translate-x-[2px] group-hover:-translate-y-[2px]" />
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                  className="mt-12 border-t border-white/10 pt-8 md:mt-14 md:pt-10"
+                >
+                  <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
+                    {[
+                      { value: "180+", label: "Projects Completed" },
+                      { value: "13+", label: "Years of Excellence" },
+                      { value: "98%", label: "Client Satisfaction" },
+                      { value: "4.9", label: "Average Rating" },
+                    ].map((stat, i) => (
+                      <div key={i} className="text-center">
+                        <div className="mb-2 font-serif text-3xl font-light text-white md:text-4xl">{stat.value}</div>
+                        <div className="text-[11px] uppercase tracking-[0.18em] text-white/56">{stat.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </FadeIn>
+      </div>
     </section>
   );
 });
@@ -510,15 +435,10 @@ export default function HomePage() {
   return (
     <div data-testid="home-page">
       <Hero />
-      <StatsStrip />
       <FeaturedProjects projects={projects} />
-      <BlueprintToReality />
       <PhilosophySection />
-      <ServicesOverview />
-      <GalleryMasonry />
-      <MeetTheStudio />
+      <BlueprintToReality />
       <Testimonials />
-      <FAQSection />
       <ConsultationCTA />
     </div>
   );

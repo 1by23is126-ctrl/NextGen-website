@@ -20,7 +20,7 @@ const Footer = memo(function Footer() {
           <Link
             to="/consultation"
             data-testid="footer-book"
-            className="inline-flex items-center mt-10 rounded-full border border-[#B38B59]/40 px-8 py-4 text-[11px] tracking-[0.22em] uppercase transition-colors duration-300 hover:border-[#B38B59] hover:text-[#B38B59]"
+            className="inline-flex items-center mt-10 ngi-button-secondary"
           >
             Begin a Project →
           </Link>

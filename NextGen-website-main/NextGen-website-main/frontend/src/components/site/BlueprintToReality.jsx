@@ -1,236 +1,386 @@
-import { memo, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import { FadeIn } from "@/components/site/Motion";
+import { memo, useEffect, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+} from "framer-motion";
 
-const STEP_LABELS = [
-  "Step 1: Blueprint",
-  "Step 2: Architecture",
-  "Step 3: Furnishing",
-  "Step 4: Illumination",
-  "Step 5: Finishes",
-  "Complete",
+const PROCESS_STEPS = [
+  {
+    number: "01",
+    eyebrow: "Discovery",
+    title: "Understand the brief",
+    subtitle: "Project foundations",
+    description: "We define goals, constraints, priorities, and how the space is meant to support daily life.",
+    supportingInfo: ["Client goals", "Spatial priorities", "Project constraints"],
+    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80",
+    visualKind: "blueprint",
+    labels: ["North light", "Primary suite", "Living axis"],
+  },
+  {
+    number: "02",
+    eyebrow: "Planning",
+    title: "Organize the layout",
+    subtitle: "Spatial order",
+    description: "Spatial logic, circulation, and room relationships are resolved before aesthetic decisions begin.",
+    supportingInfo: ["Circulation paths", "Room adjacencies", "Functional zoning"],
+    image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=80",
+    visualKind: "materials",
+    palette: ["#D8CCBD", "#8B7355", "#B9B7B0", "#5C5046"],
+  },
+  {
+    number: "03",
+    eyebrow: "Direction",
+    title: "Set the design language",
+    subtitle: "Material intent",
+    description: "Materials, mood, tone, and architectural intent are aligned into one clear direction.",
+    supportingInfo: ["Material palette", "Atmosphere", "Architectural tone"],
+    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+    visualKind: "render",
+    labels: ["Perspective view", "Warm oak", "Ambient glow"],
+  },
+  {
+    number: "04",
+    eyebrow: "Development",
+    title: "Refine the details",
+    subtitle: "Technical resolution",
+    description: "Joinery, finishes, lighting, and technical decisions are coordinated into a buildable system.",
+    supportingInfo: ["Joinery details", "Lighting plan", "Finish coordination"],
+    image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80",
+    visualKind: "construction",
+    labels: ["Site review", "Joinery mark-up", "Lighting check"],
+  },
+  {
+    number: "05",
+    eyebrow: "Execution",
+    title: "Coordinate delivery",
+    subtitle: "Project movement",
+    description: "Selections, approvals, procurement, and site communication keep the project moving cleanly.",
+    supportingInfo: ["Procurement", "Approvals", "Site coordination"],
+    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+    visualKind: "styling",
+    labels: ["Art placement", "Textile balance", "Layered lighting"],
+  },
+  {
+    number: "06",
+    eyebrow: "Completion",
+    title: "Prepare the final reveal",
+    subtitle: "Final readiness",
+    description: "The last layer brings clarity, cohesion, and readiness for the finished home to be experienced.",
+    supportingInfo: ["Styling review", "Final checks", "Client handoff"],
+    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+    visualKind: "reveal",
+    labels: ["Final styling", "Evening mood", "Client reveal"],
+  },
 ];
 
-/**
- * BlueprintToReality Component - FIXED VERSION
- * Signature experience: 6-step scroll-driven transformation from architectural blueprint to completed luxurious space
- * This is the WOW moment that defines the brand identity
- *
- * FIX: Blueprint overlay now properly removed from DOM when hidden to prevent rendering artifacts
- */
-const BlueprintToReality = memo(function BlueprintToReality() {
-  const containerRef = useRef(null);
+const OBSERVER_OPTIONS = {
+  root: null,
+  rootMargin: "-40% 0px -40% 0px",
+  threshold: [0.2, 0.4, 0.6],
+};
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start center", "end center"],
-  });
+const fadeTransition = {
+  duration: 1.05,
+  ease: [0.22, 1, 0.36, 1],
+};
 
-  // Calculate progress through 6 steps (0-1 maps to step 0-6)
-  const step = useTransform(scrollYProgress, [0, 1], [0, 6]);
+const panelTransition = {
+  duration: 1.15,
+  ease: [0.22, 1, 0.36, 1],
+};
 
-  // Step label: instead of 6 permanently-mounted, individually scroll-linked
-  // spans, track a single label index and only re-render (rare) when it
-  // actually crosses a step boundary. The crossfade itself is one motion.span.
-  const [labelIndex, setLabelIndex] = useState(0);
-  useMotionValueEvent(step, "change", (latest) => {
-    const idx = Math.min(STEP_LABELS.length - 1, Math.max(0, Math.round(latest)));
-    setLabelIndex((prev) => (prev === idx ? prev : idx));
-  });
+const staggerParentVariants = {
+  initial: {},
+  animate: {
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.04,
+    },
+  },
+  exit: {
+    transition: {
+      staggerChildren: 0.035,
+      staggerDirection: -1,
+    },
+  },
+};
 
-  // Background image transitions for the transformation
-  const stageTwoOpacity = useTransform(step, [1.2, 2.8, 3.8], [0, 1, 0]);
-  const stageThreeOpacity = useTransform(step, [3.4, 4.6, 5.8], [0, 1, 1]);
+const staggerChildVariants = {
+  initial: { opacity: 0, y: 10, filter: "blur(8px)", scale: 0.992 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    scale: 1,
+    transition: fadeTransition,
+  },
+  exit: {
+    opacity: 0,
+    y: -8,
+    filter: "blur(8px)",
+    scale: 0.992,
+    transition: {
+      duration: 0.55,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
 
-  // Walls opacity and scale (appears at step 2)
-  const wallsOpacity = useTransform(step, [1.2, 1.8, 5], [0, 1, 1]);
-
-  // Furniture opacity and scale (appears at step 3)
-  const furnitureOpacity = useTransform(step, [2.2, 2.8, 5], [0, 1, 1]);
-
-  // Lighting overlay (appears at step 4)
-  const lightingOpacity = useTransform(step, [3.2, 3.8, 5], [0, 0.28, 0.28]);
-
-  // Textures overlay (appears at step 5)
-  const texturesOpacity = useTransform(step, [4.2, 4.8], [0, 0.15]);
-
-  // Final completed space text block (fades in at step 6)
-  const finalOpacity = useTransform(step, [5.2, 5.8], [0, 1]);
-
-  const processCards = useMemo(
-    () => [
-      {
-        num: "01",
-        title: "Discovery",
-        desc: "We listen more than we speak. Understanding how you live is where every great space begins.",
-      },
-      {
-        num: "02",
-        title: "Design",
-        desc: "Every line, every material, every joint is drawn and reconsidered until it feels inevitable.",
-      },
-      {
-        num: "03",
-        title: "Execute",
-        desc: "We see it through to completion. The finished space should feel like it always belonged.",
-      },
-    ],
-    []
-  );
-
-  // Slight scale animations for smoothness
-  const wallsScale = useTransform(step, [1.2, 1.8], [0.95, 1]);
-  const furnitureScale = useTransform(step, [2.2, 2.8], [0.95, 1]);
-
+function StepVisualOverlay({ step, shouldReduceMotion }) {
   return (
-    <section
-      ref={containerRef}
-      className="relative min-h-[250vh] bg-[#171717] text-white"
-      data-testid="blueprint-to-reality"
+    <motion.div
+      key="process-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={panelTransition}
+      className="absolute inset-0"
     >
-      {/* Sticky container for the transformation visualization */}
-      <div className="sticky top-0 h-screen overflow-hidden bg-[#171717]">
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Step indicator - subtle text on top right. One crossfading span
-              instead of 6 permanently-mounted, individually scroll-linked ones. */}
-          <div className="absolute top-12 right-12 z-10 text-right">
-            <div className="text-[12px] tracking-[0.2em] uppercase text-white/75 font-light">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={labelIndex}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="block"
-                >
-                  {STEP_LABELS[labelIndex]}
-                </motion.span>
-              </AnimatePresence>
-            </div>
+      <motion.div
+        initial={{ opacity: 0.03 }}
+        animate={{ opacity: 0.08 }}
+        exit={{ opacity: 0.03 }}
+        transition={panelTransition}
+        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,23,23,0.10),rgba(23,23,23,0.80))]"
+      />
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -6 }}
+        transition={panelTransition}
+        className="absolute left-5 right-5 bottom-5 rounded-[18px] border border-white/10 bg-black/14 px-4 py-3 backdrop-blur-sm md:left-7 md:right-7 md:bottom-7 md:px-5 md:py-4"
+      >
+        <div className="flex items-end justify-between gap-4">
+          <div className="min-w-0">
+            <div className="text-[10px] uppercase tracking-[0.22em] text-[#C8A46A]">{step.eyebrow}</div>
+            <div className="mt-1 font-serif text-lg font-light leading-tight text-white md:text-xl">{step.title}</div>
           </div>
-
-          {/* Main transformation container */}
-          <div className="relative w-full h-full flex items-center justify-center px-6 md:px-12 lg:px-24 bg-[#171717]">
-            {/* Base/Background layer */}
-            <div className="absolute inset-0 w-full h-full">
-              <motion.img
-                src="https://images.pexels.com/photos/34538288/pexels-photo-34538288.jpeg"
-                alt="Minimal interior in progress"
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ opacity: stageTwoOpacity, willChange: "opacity" }}
-                loading="lazy"
-              />
-              <motion.img
-                src="https://images.pexels.com/photos/13201479/pexels-photo-13201479.jpeg"
-                alt="Final completed space"
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ opacity: stageThreeOpacity, willChange: "opacity" }}
-                loading="lazy"
+          <div className="shrink-0 text-right">
+            <div className="font-serif text-xl font-light text-[#C8A46A] md:text-[1.75rem]">{step.number}</div>
+            <div className="mt-2 h-px w-10 bg-white/24 md:w-12">
+              <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={panelTransition}
+                className="h-full origin-left bg-[#C8A46A]"
               />
             </div>
-
-            {/* Step 2-3: Architectural elements layer */}
-            <motion.div
-              style={{ opacity: wallsOpacity, scale: wallsScale, willChange: "opacity, transform" }}
-              className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
-            >
-              <div className="absolute inset-0 bg-[#262626] opacity-40" />
-              <div className="absolute inset-0 border-4 border-[#C8A46A]/20" />
-            </motion.div>
-
-            {/* Step 3: Furniture silhouettes */}
-            <motion.div
-              style={{ opacity: furnitureOpacity, scale: furnitureScale, willChange: "opacity, transform" }}
-              className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
-            >
-              <div className="absolute inset-0 bg-gradient-radial from-white/10 to-transparent" />
-            </motion.div>
-
-            {/* Step 4: Lighting effect (warm glow) */}
-            <motion.div
-              style={{ opacity: lightingOpacity, willChange: "opacity" }}
-              className="absolute inset-0 w-full h-full pointer-events-none"
-            >
-              <div className="absolute top-0 left-1/3 w-96 h-96 bg-gradient-radial from-[#C8A46A]/20 to-transparent blur-3xl" />
-              <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-radial from-[#C8A46A]/15 to-transparent blur-3xl" />
-            </motion.div>
-
-            {/* Step 5: Texture overlay (subtle) */}
-            <motion.div
-              style={{ opacity: texturesOpacity, willChange: "opacity" }}
-              className="absolute inset-0 w-full h-full pointer-events-none"
-            >
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage:
-                    "url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%223%22 /%3E%3C/filter%3E%3Crect width=%2260%22 height=%2260%22 fill=%22%23000%22 filter=%22url(%23noise)%22 opacity=%220.02%22/%3E%3C/svg%3E')",
-                  backgroundRepeat: "repeat",
-                }}
-              />
-            </motion.div>
-
-            {/* Step 6: Final completed space fade in */}
-            <motion.div
-              style={{ opacity: finalOpacity, willChange: "opacity" }}
-              className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none"
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/0 via-[#171717]/0 to-[#171717]/20" />
-              <div className="relative w-full h-full flex items-end justify-start p-12">
-                <div className="max-w-md z-10">
-                  <div className="text-[11px] tracking-[0.22em] uppercase text-[#C8A46A] mb-4">The Complete Vision</div>
-                  <h3 className="font-serif text-4xl md:text-5xl text-white font-light leading-tight mb-4">
-                    A space that evolves with you
-                  </h3>
-                  <p className="text-white/75 text-sm leading-relaxed">
-                    Every detail, from the blueprint to the final finish, is designed to create an environment that holds a quiet conversation with the people inside it.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
-      {/* Scroll guide text - visible during scroll */}
-      <div className="fixed bottom-12 left-12 z-40 pointer-events-none hidden lg:block">
-        <motion.div
-          style={{
-            opacity: useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]),
-          }}
-          className="text-[12px] tracking-[0.2em] uppercase text-white/75 font-light"
-        >
-          Scroll to reveal the transformation
-        </motion.div>
-      </div>
+const BlueprintToReality = memo(function BlueprintToReality() {
+  const sectionRef = useRef(null);
+  const stepRefs = useRef([]);
+  const [activeStep, setActiveStep] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 70,
+    damping: 24,
+    mass: 0.35,
+  });
 
-      {/* Content section below the sticky transformation */}
-      <div className="relative bg-[#171717] py-24 md:py-32 lg:py-40">
-        <div className="ngi-container">
-          <FadeIn className="max-w-3xl">
-            <div className="ngi-overline mb-4">
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const visibleEntries = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((entryA, entryB) => entryB.intersectionRatio - entryA.intersectionRatio);
+
+      if (!visibleEntries.length) {
+        return;
+      }
+
+      const nextStep = Number(visibleEntries[0].target.getAttribute("data-step-index"));
+      if (Number.isNaN(nextStep)) {
+        return;
+      }
+
+      setActiveStep((currentStep) => (currentStep === nextStep ? currentStep : nextStep));
+    }, OBSERVER_OPTIONS);
+
+    const currentStepRefs = stepRefs.current.filter(Boolean);
+    currentStepRefs.forEach((stepRef) => observer.observe(stepRef));
+
+    return () => {
+      currentStepRefs.forEach((stepRef) => observer.unobserve(stepRef));
+      observer.disconnect();
+    };
+  }, []);
+
+  const activeProcessStep = PROCESS_STEPS[activeStep] ?? PROCESS_STEPS[0];
+  const imageAnimation = {};
+  const imageTransition = shouldReduceMotion
+    ? { duration: 0.3 }
+    : { duration: 18, repeat: Infinity, ease: "easeInOut" };
+
+  return (
+    <section ref={sectionRef} className="relative bg-[#171717] text-white" data-testid="blueprint-to-reality">
+      <div className="ngi-container w-full max-w-[1500px] py-12 md:py-16 lg:py-18">
+        <div className="mb-16 grid gap-8 lg:grid-cols-[minmax(0,0.35fr)_minmax(0,0.65fr)] lg:items-end lg:gap-14 lg:mb-20">
+          <div className="min-w-0">
+            <div className="ngi-overline mb-4 lg:mb-5">
               <span className="ngi-rule" />Our Process
             </div>
-            <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter leading-[1.05] max-w-4xl mb-8">
-              From vision to reality in six considered steps.
+            <h2
+              className="max-w-[16ch] font-serif font-light leading-[1.04] text-white"
+              style={{ fontSize: "clamp(1.5rem, 2.7vw, 2.75rem)" }}
+            >
+              Every stage reveals a different layer of the project.
             </h2>
-            <p className="text-lg md:text-xl text-white/75 leading-relaxed max-w-2xl">
-              What you've just witnessed isn't just an animation—it's our design philosophy made visible. We begin where every great project begins: with an idea. Then we build it with intention, craft, and an obsessive attention to every detail.
-            </p>
-          </FadeIn>
+          </div>
+          <p className="min-w-0 max-w-[34rem] text-base leading-8 text-white/66 md:text-lg lg:pl-1">
+            The structure stays fixed and readable while the visual language, pacing, and details shift with each stage of the process.
+          </p>
+        </div>
 
-          {/* Quick process overview */}
-          <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-12">
-            {processCards.map((p, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div className="border-t border-white/20 pt-6">
-                  <div className="text-6xl font-serif text-[#C8A46A] font-light mb-4">{p.num}</div>
-                  <h3 className="font-serif text-2xl md:text-3xl font-light mb-3">{p.title}</h3>
-                  <p className="text-sm leading-relaxed text-white/75">{p.desc}</p>
+        <div className="grid gap-14 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,0.4fr)] lg:gap-16">
+          <div className="relative min-w-0">
+            <div className="lg:sticky lg:top-10 lg:flex lg:h-[calc(100svh-5rem)] lg:items-center">
+              <motion.div
+                layout
+                transition={panelTransition}
+                className="relative w-full min-w-0 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] p-4 md:aspect-[3/2.3] md:p-5 lg:aspect-[3/2.3] lg:p-5"
+              >
+                <div className="absolute inset-0">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeProcessStep.number}
+                      initial={{ opacity: 0, scale: 1.02, filter: shouldReduceMotion ? "blur(0px)" : "blur(8px)" }}
+                      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, scale: 0.995, filter: shouldReduceMotion ? "blur(0px)" : "blur(8px)" }}
+                      transition={panelTransition}
+                      className="absolute inset-0"
+                    >
+                      <motion.div
+                        layout
+                        animate={imageAnimation}
+                        transition={imageTransition}
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ backgroundImage: `url(${activeProcessStep.image})` }}
+                      />
+                      <motion.div
+                        initial={{ opacity: 0.65 }}
+                        animate={{ opacity: 0.88 }}
+                        exit={{ opacity: 0.65 }}
+                        transition={panelTransition}
+                        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(23,23,23,0.06),rgba(23,23,23,0.82))]"
+                      />
+                      <StepVisualOverlay step={activeProcessStep} shouldReduceMotion={shouldReduceMotion} />
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
-              </FadeIn>
-            ))}
+                <div className="relative mt-3 h-px w-full overflow-hidden rounded-full bg-white/10" aria-hidden="true">
+                  <motion.div className="h-full origin-left rounded-full bg-[#C8A46A]" style={{ scaleX: smoothProgress }} />
+                </div>
+
+                <div className="relative mt-6 flex items-start justify-between gap-4">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      layout
+                      key={`${activeProcessStep.number}-heading`}
+                      initial={{ opacity: 0, y: 14, filter: shouldReduceMotion ? "blur(0px)" : "blur(8px)", scale: 0.992 }}
+                      animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
+                      exit={{ opacity: 0, y: -12, filter: shouldReduceMotion ? "blur(0px)" : "blur(8px)", scale: 0.992 }}
+                      transition={panelTransition}
+                    >
+                      <div className="text-[11px] uppercase tracking-[0.22em] text-[#C8A46A]">
+                        {activeProcessStep.eyebrow}
+                      </div>
+                      <h3 className="mt-2 max-w-[12ch] font-serif text-[clamp(1.35rem,1.8vw,2.2rem)] font-light leading-tight text-white">
+                        {activeProcessStep.title}
+                      </h3>
+                    </motion.div>
+                  </AnimatePresence>
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      layout
+                      key={`${activeProcessStep.number}-number`}
+                      initial={{ opacity: 0, scale: 0.98, filter: shouldReduceMotion ? "blur(0px)" : "blur(8px)" }}
+                      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, scale: 1.01, filter: shouldReduceMotion ? "blur(0px)" : "blur(8px)" }}
+                      transition={panelTransition}
+                      className="shrink-0 font-serif text-xl text-[#C8A46A] md:text-[1.75rem]"
+                    >
+                      {activeProcessStep.number}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    layout
+                    key={`${activeProcessStep.number}-body`}
+                    variants={staggerParentVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    className="relative"
+                    aria-live="polite"
+                  >
+                    <motion.p variants={staggerChildVariants} className="mt-4 max-w-[30rem] text-[15px] leading-7 text-white/72 md:text-base">
+                      {activeProcessStep.description}
+                    </motion.p>
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
+            </div>
+          </div>
+
+          <div className="relative min-w-0">
+            {PROCESS_STEPS.map((step, index) => {
+              const isActive = index === activeStep;
+
+              return (
+                <motion.section
+                  layout
+                  key={step.number}
+                  ref={(node) => {
+                    stepRefs.current[index] = node;
+                  }}
+                  data-step-index={index}
+                  className="flex min-h-[100svh] items-center py-10"
+                  aria-labelledby={`process-step-${step.number}`}
+                >
+                  <motion.div
+                    layout
+                    initial={false}
+                    animate={{
+                      opacity: isActive ? 1 : 0.72,
+                      filter: isActive || shouldReduceMotion ? "blur(0px)" : "blur(0.6px)",
+                    }}
+                    transition={panelTransition}
+                    className={`ml-auto w-full max-w-[30rem] min-w-0 rounded-[28px] border p-6 md:p-7 lg:p-8 ${isActive ? "border-white/16 bg-white/[0.04]" : "border-white/8 bg-white/[0.02]"}`}
+                  >
+                    <motion.div layout className="text-[10px] uppercase tracking-[0.22em] text-[#C8A46A] md:text-[11px]">
+                      {step.eyebrow}
+                    </motion.div>
+                    <motion.div layout className="mt-3 font-serif text-4xl font-light leading-none text-white/18 md:text-5xl lg:text-6xl">
+                      {step.number}
+                    </motion.div>
+                    <motion.h3
+                      id={`process-step-${step.number}`}
+                      layout
+                      className="mt-3 max-w-[12ch] font-serif text-[clamp(1.35rem,1.8vw,2.15rem)] font-light leading-tight text-white"
+                    >
+                      {step.title}
+                    </motion.h3>
+                    <motion.p layout className="mt-3 max-w-[24rem] text-[14px] leading-7 text-white/68 md:text-[15px]">
+                      {step.description}
+                    </motion.p>
+                  </motion.div>
+                </motion.section>
+              );
+            })}
           </div>
         </div>
       </div>

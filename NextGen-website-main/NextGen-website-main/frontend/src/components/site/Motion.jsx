@@ -1,15 +1,15 @@
-import { motion, useInView, useMotionValue, useTransform, animate, useReducedMotion } from "framer-motion";
-import React, { useEffect, useRef, useState } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
 import { DURATIONS, EASING, SCROLL_MARGINS, STAGGER } from "../../lib/animationConfig";
 
-export const FadeIn = React.memo(function FadeIn({ children, delay = 0, y = 24, className = "", once = true }) {
+export const FadeIn = React.memo(function FadeIn({ children, delay = 0, y = 18, className = "", once = true }) {
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <motion.div
       initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y }}
       whileInView={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
-      viewport={{ once, amount: 0.15, margin: `${SCROLL_MARGINS.STANDARD}px` }}
+      viewport={{ once, amount: 0.2, margin: `${SCROLL_MARGINS.STANDARD}px` }}
       transition={{ duration: prefersReducedMotion ? 0.15 : DURATIONS.MEDIUM / 1000, ease: EASING.PRIMARY, delay }}
       className={className}
       style={{ willChange: "transform, opacity" }}
@@ -49,19 +49,32 @@ export const RevealText = React.memo(function RevealText({ text, className = "",
 
 export function CountUp({ to = 100, duration = DURATIONS.EXTENDED, suffix = "", className = "" }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: `${SCROLL_MARGINS.LATE}px` });
-  
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, Math.round);
+  const [value, setValue] = React.useState(0);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (inView) {
-      animate(count, to, {
-        duration: duration / 1000,
-        ease: EASING.PRIMARY,
-      });
+    if (prefersReducedMotion || duration <= 0) {
+      setValue(to);
+      return undefined;
     }
-  }, [inView, to, duration, count]);
 
-  return <motion.span ref={ref} className={className}>{rounded}{suffix}</motion.span>;
+    let frameId = 0;
+    const startTime = performance.now();
+
+    const tick = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = progress < 1 ? progress * (2 - progress) : 1;
+      setValue(Math.round(to * eased));
+
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [to, duration, prefersReducedMotion]);
+
+  return <motion.span ref={ref} className={className}>{value}{suffix}</motion.span>;
 }

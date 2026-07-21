@@ -13,13 +13,13 @@ const STEPS = [
 export default function ProcessPage() {
   return (
     <div data-testid="process-page" className="pt-28">
-      <section className="ngi-container py-16 md:py-24">
+      <section className="ngi-page-hero">
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Process</div>
-          <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-4xl">
+          <h1 className="ngi-page-title max-w-4xl">
             Six stages. <em className="text-[#707070]">Unhurried by design.</em>
           </h1>
-          <p className="mt-8 max-w-2xl text-base md:text-lg leading-relaxed text-[#1E1E1E]/80">
+          <p className="mt-8 max-w-2xl ngi-page-body">
             We have refined this process across two hundred and forty projects. It is the architecture behind the architecture.
           </p>
         </FadeIn>
@@ -46,8 +46,8 @@ export default function ProcessPage() {
 
       <section className="ngi-section ngi-container">
         <div className="bg-[#171717] text-white p-12 md:p-20 ngi-grain">
-          <h2 className="font-serif text-3xl md:text-5xl font-light max-w-2xl">Ready to begin?</h2>
-          <Link to="/consultation" className="inline-flex mt-8 bg-[#C8A46A] text-white hover:bg-[#D6B27A] px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors">
+          <h2 className="ngi-section-heading max-w-2xl">Ready to begin?</h2>
+          <Link to="/consultation" className="inline-flex mt-8 ngi-button-accent">
             Book a Consultation →
           </Link>
         </div>

@@ -27,10 +27,10 @@ export default function ContactPage() {
 
   return (
     <div data-testid="contact-page" className="pt-28">
-      <section className="ngi-container py-16 md:py-24">
+      <section className="ngi-page-hero">
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Contact</div>
-          <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-4xl">
+          <h1 className="ngi-page-title max-w-4xl">
             Let's <em className="text-[#707070]">begin a conversation</em>.
           </h1>
         </FadeIn>
@@ -41,53 +41,53 @@ export default function ContactPage() {
           <form onSubmit={onSubmit} className="space-y-8" data-testid="contact-form">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <label className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Your Name</label>
+                <label className="ngi-page-label">Your Name</label>
                 <input
                   required
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   data-testid="contact-name"
-                  className="w-full bg-[#FFFFFF] border border-[#E7E2DA] focus:border-[#C8A46A] placeholder:text-[#707070] outline-none py-3 px-4 text-lg font-serif shadow-[0_12px_30px_rgba(23,23,23,0.03)] transition-all duration-300"
+                  className="ngi-input"
                 />
               </div>
               <div>
-                <label className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Email</label>
+                <label className="ngi-page-label">Email</label>
                 <input
                   required
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   data-testid="contact-email"
-                  className="w-full bg-[#FFFFFF] border border-[#E7E2DA] focus:border-[#C8A46A] placeholder:text-[#707070] outline-none py-3 px-4 text-lg font-serif shadow-[0_12px_30px_rgba(23,23,23,0.03)] transition-all duration-300"
+                  className="ngi-input"
                 />
               </div>
             </div>
             <div>
-              <label className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Phone</label>
+              <label className="ngi-page-label">Phone</label>
               <input
                 required
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 data-testid="contact-phone"
-                className="w-full bg-[#FFFFFF] border border-[#E7E2DA] focus:border-[#C8A46A] placeholder:text-[#707070] outline-none py-3 px-4 text-lg font-serif shadow-[0_12px_30px_rgba(23,23,23,0.03)] transition-all duration-300"
+                className="ngi-input"
               />
             </div>
             <div>
-              <label className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Tell us about your project</label>
+              <label className="ngi-page-label">Tell us about your project</label>
               <textarea
                 required
                 rows={5}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 data-testid="contact-message"
-                className="w-full bg-[#FFFFFF] border border-[#E7E2DA] focus:border-[#C8A46A] placeholder:text-[#707070] outline-none py-3 px-4 text-lg font-serif resize-none shadow-[0_12px_30px_rgba(23,23,23,0.03)] transition-all duration-300"
+                className="ngi-textarea"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
               data-testid="contact-submit"
-              className="bg-[#171717] text-white px-10 py-5 text-[11px] tracking-[0.22em] uppercase hover:bg-[#C8A46A] hover:text-white transition-colors disabled:opacity-50 shadow-[0_16px_40px_rgba(23,23,23,0.08)]"
+              className="ngi-button-primary disabled:opacity-50"
             >
               {loading ? "Sending…" : done ? "Sent ✓ Send Another" : "Send Message →"}
             </button>
@@ -137,7 +137,7 @@ export default function ContactPage() {
 
       <section className="ngi-container pb-24 md:pb-32">
         <FadeIn>
-          <div className="aspect-[21/9] border border-[#171717]/15">
+          <div className="aspect-[21/9] ngi-panel overflow-hidden">
             <iframe
               title="NextGen Studio Location"
               src={BUSINESS.mapEmbed}

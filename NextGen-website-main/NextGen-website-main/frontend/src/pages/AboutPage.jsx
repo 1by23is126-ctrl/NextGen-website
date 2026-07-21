@@ -18,10 +18,10 @@ const PRINCIPLES = [
 export default function AboutPage() {
   return (
     <div data-testid="about-page" className="pt-28">
-      <section className="ngi-container py-16 md:py-24">
+      <section className="ngi-page-hero">
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />The Studio</div>
-          <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-5xl">
+          <h1 className="ngi-page-title max-w-5xl">
             A small studio in Bengaluru, working <em className="text-[#707070]">unhurriedly</em>, across India.
           </h1>
         </FadeIn>
@@ -47,7 +47,7 @@ export default function AboutPage() {
         <div className="ngi-container ngi-section">
           <FadeIn className="mb-16 max-w-2xl">
             <div className="ngi-overline mb-4"><span className="ngi-rule" />Four principles</div>
-            <h2 className="font-serif text-4xl md:text-5xl font-light tracking-tight leading-tight">What we believe.</h2>
+            <h2 className="ngi-section-heading">What we believe.</h2>
           </FadeIn>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {PRINCIPLES.map((p, i) => (
@@ -64,7 +64,7 @@ export default function AboutPage() {
       <section className="ngi-section ngi-container">
         <FadeIn className="mb-12">
           <div className="ngi-overline mb-4"><span className="ngi-rule" />The People</div>
-          <h2 className="font-serif text-4xl md:text-5xl font-light tracking-tight">A studio of thirteen.</h2>
+          <h2 className="ngi-section-heading">A studio of thirteen.</h2>
         </FadeIn>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {TEAM.map((m, i) => (
@@ -93,10 +93,10 @@ export default function AboutPage() {
       <section className="ngi-section ngi-container text-center">
         <FadeIn>
           <div className="ngi-overline mb-4 inline-block"><span className="ngi-rule" />Work with us</div>
-          <h2 className="font-serif text-4xl md:text-6xl font-light tracking-tight leading-tight max-w-3xl mx-auto">
+          <h2 className="ngi-section-heading max-w-3xl mx-auto">
             Begin a conversation.
           </h2>
-          <Link to="/consultation" data-testid="about-cta" className="inline-flex mt-10 bg-[#171717] text-white hover:bg-[#C8A46A] hover:text-white px-10 py-5 text-[11px] tracking-[0.22em] uppercase transition-colors duration-300">
+          <Link to="/consultation" data-testid="about-cta" className="inline-flex mt-10 ngi-button-primary">
             Book a Consultation
           </Link>
         </FadeIn>

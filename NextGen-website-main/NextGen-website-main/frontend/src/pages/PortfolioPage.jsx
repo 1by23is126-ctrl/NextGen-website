@@ -28,10 +28,10 @@ export default function PortfolioPage() {
 
   return (
     <div data-testid="portfolio-page" className="pt-28">
-      <section className="ngi-container py-16 md:py-24">
+      <section className="ngi-page-hero">
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Portfolio</div>
-          <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-5xl">
+          <h1 className="ngi-page-title max-w-5xl">
             Selected works <em className="text-[#707070]">from the past decade</em>.
           </h1>
         </FadeIn>
@@ -44,10 +44,10 @@ export default function PortfolioPage() {
               key={f.key}
               data-testid={`filter-${f.key}`}
               onClick={() => setFilter(f.key)}
-              className={`text-[11px] tracking-[0.22em] uppercase py-3 px-5 transition-colors ${
+              className={`ngi-button-secondary px-5 py-3 ${
                 filter === f.key
-                  ? "bg-[#171717] text-white"
-                  : "text-[#1E1E1E]/70 hover:text-[#C8A46A] border border-transparent hover:border-[#C8A46A]/40"
+                  ? "bg-[#171717] text-white border-[#171717] hover:bg-[#171717] hover:text-white"
+                  : ""
               }`}
             >
               {f.label}
@@ -78,12 +78,12 @@ export default function PortfolioPage() {
                   className={span}
                 >
                   <Link to={`/portfolio/${p.slug}`} className="group block" data-testid={`project-card-${p.slug}`}>
-                    <div className={`ngi-image-zoom bg-[#E7E2DA] ${i % 3 === 0 ? "aspect-[4/5]" : "aspect-[5/4]"}`}>
+                    <div className={`ngi-image-zoom ngi-panel overflow-hidden ${i % 3 === 0 ? "aspect-[4/5]" : "aspect-[5/4]"}`}>
                       <img src={`${p.cover_image}?auto=compress&w=800&q=75`} alt={p.title} className="w-full h-full object-cover" loading="lazy" decoding="async" />
                     </div>
                     <div className="flex items-start justify-between mt-5">
                       <div>
-                        <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">{p.category} · {p.location} · {p.year}</div>
+                        <div className="ngi-page-label">{p.category} · {p.location} · {p.year}</div>
                         <h3 className="font-serif text-2xl md:text-3xl mt-2 group-hover:text-[#707070] transition-colors">{p.title}</h3>
                       </div>
                       <ArrowUpRight size={20} className="mt-2 group-hover:text-[#C8A46A] transition-colors" />

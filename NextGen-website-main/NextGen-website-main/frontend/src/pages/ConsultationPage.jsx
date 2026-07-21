@@ -49,15 +49,15 @@ export default function ConsultationPage() {
   };
 
   return (
-    <div data-testid="consultation-page" className="min-h-screen pt-28 pb-24 bg-[#F6F4F1]">
+    <div data-testid="consultation-page" className="min-h-screen pt-28 pb-24 bg-[#F7F4EF]">
       <section className="ngi-container">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
           <aside className="md:col-span-4">
             <div className="ngi-overline mb-6"><span className="ngi-rule" />Book a Consultation</div>
-            <h1 className="font-serif text-4xl md:text-5xl font-light tracking-tighter leading-[1.05]">
+            <h1 className="ngi-section-heading max-w-sm">
               Ninety minutes. <em className="text-[#707070]">Honest, unrushed.</em>
             </h1>
-            <p className="mt-6 text-base leading-relaxed text-[#1E1E1E]/80 max-w-sm">
+            <p className="mt-6 ngi-page-body max-w-sm">
               No deck, no sales. A conversation between the people who will design your space and the people who will live in it.
             </p>
             <div className="mt-12 space-y-3 text-sm text-[#1E1E1E]/70">
@@ -95,18 +95,18 @@ export default function ConsultationPage() {
                   transition={{ duration: 0.4 }}
                   className="flex-1"
                 >
-                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">{STEPS[step].subtitle}</div>
-                  <h2 className="font-serif text-3xl md:text-5xl font-light mt-4 mb-10 leading-tight">{STEPS[step].title}</h2>
+                  <div className="ngi-page-label">{STEPS[step].subtitle}</div>
+                  <h2 className="ngi-section-heading mt-4 mb-10">{STEPS[step].title}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {STEPS[step].options.map((opt) => (
                       <button
                         key={opt}
                         onClick={() => select(STEPS[step].key, opt)}
                         data-testid={`consult-option-${STEPS[step].key}-${opt}`}
-                        className={`text-left px-6 py-5 border transition-all ${
+                        className={`text-left ngi-panel px-6 py-5 transition-all ${
                           data[STEPS[step].key] === opt
                             ? "bg-[#171717] text-white border-[#171717]"
-                            : "border-[#171717]/20 hover:border-[#171717] hover:bg-[#E7E2DA]/50"
+                            : "hover:border-[#171717] hover:bg-[#E7E2DA]/50"
                         }`}
                       >
                         <span className="font-serif text-xl md:text-2xl">{opt}</span>
@@ -116,7 +116,7 @@ export default function ConsultationPage() {
                   {step > 0 && (
                     <button
                       onClick={() => setStep((s) => s - 1)}
-                      className="mt-10 text-[10px] tracking-[0.22em] uppercase text-[#1E1E1E]/60 hover:text-[#C8A46A]"
+                      className="mt-10 ngi-page-label hover:text-[#B38B59]"
                     >
                       ← Previous
                     </button>
@@ -135,25 +135,25 @@ export default function ConsultationPage() {
                   className="flex-1"
                   data-testid="consult-final-form"
                 >
-                  <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Last step. Tell us who to call.</div>
-                  <h2 className="font-serif text-3xl md:text-5xl font-light mt-4 mb-10 leading-tight">Your details.</h2>
+                  <div className="ngi-page-label">Last step. Tell us who to call.</div>
+                  <h2 className="ngi-section-heading mt-4 mb-10">Your details.</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                      <label className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Full Name</label>
-                      <input required value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} data-testid="consult-name" className="w-full bg-white border border-[#E7E2DA] focus:border-[#C8A46A] outline-none py-3 text-lg font-serif" />
+                      <label className="ngi-page-label">Full Name</label>
+                      <input required value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} data-testid="consult-name" className="ngi-input" />
                     </div>
                     <div>
-                      <label className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Phone</label>
-                      <input required value={data.phone} onChange={(e) => setData({ ...data, phone: e.target.value })} data-testid="consult-phone" className="w-full bg-white border border-[#E7E2DA] focus:border-[#C8A46A] outline-none py-3 text-lg font-serif" />
+                      <label className="ngi-page-label">Phone</label>
+                      <input required value={data.phone} onChange={(e) => setData({ ...data, phone: e.target.value })} data-testid="consult-phone" className="ngi-input" />
                     </div>
                   </div>
                   <div className="mt-8">
-                    <label className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Email</label>
-                    <input required type="email" value={data.email} onChange={(e) => setData({ ...data, email: e.target.value })} data-testid="consult-email" className="w-full bg-white border border-[#E7E2DA] focus:border-[#C8A46A] outline-none py-3 text-lg font-serif" />
+                    <label className="ngi-page-label">Email</label>
+                    <input required type="email" value={data.email} onChange={(e) => setData({ ...data, email: e.target.value })} data-testid="consult-email" className="ngi-input" />
                   </div>
                   <div className="mt-8">
-                    <label className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">Anything we should know</label>
-                    <textarea rows={3} value={data.message} onChange={(e) => setData({ ...data, message: e.target.value })} data-testid="consult-message" className="w-full bg-white border border-[#E7E2DA] focus:border-[#C8A46A] outline-none py-3 text-lg font-serif resize-none" />
+                    <label className="ngi-page-label">Anything we should know</label>
+                    <textarea rows={3} value={data.message} onChange={(e) => setData({ ...data, message: e.target.value })} data-testid="consult-message" className="ngi-textarea" />
                   </div>
                   <div className="mt-12 flex items-center gap-6">
                     <button type="button" onClick={() => setStep((s) => s - 1)} className="text-[10px] tracking-[0.22em] uppercase text-[#1E1E1E]/60 hover:text-[#C8A46A]">
@@ -163,7 +163,7 @@ export default function ConsultationPage() {
                       type="submit"
                       disabled={loading}
                       data-testid="consult-submit"
-                      className="inline-flex items-center gap-3 bg-[#171717] text-white px-10 py-5 text-[11px] tracking-[0.22em] uppercase hover:bg-[#C8A46A] hover:text-white transition-colors disabled:opacity-50"
+                      className="ngi-button-primary gap-3 disabled:opacity-50"
                     >
                       {loading ? "Submitting…" : "Book Consultation"} <ArrowRight size={14} />
                     </button>
@@ -180,11 +180,11 @@ export default function ConsultationPage() {
                   className="flex-1 flex flex-col items-start justify-center"
                   data-testid="consult-success"
                 >
-                  <div className="w-16 h-16 border border-[#C8A46A] flex items-center justify-center mb-8">
-                    <Check size={28} className="text-[#C8A46A]" strokeWidth={1.5} />
+                  <div className="w-16 h-16 border border-[#B38B59] flex items-center justify-center mb-8">
+                    <Check size={28} className="text-[#B38B59]" strokeWidth={1.5} />
                   </div>
-                  <h2 className="font-serif text-4xl md:text-6xl font-light leading-tight">Thank you, {data.name?.split(" ")[0] || "friend"}.</h2>
-                  <p className="mt-6 text-lg text-[#1E1E1E]/80 max-w-lg leading-relaxed">
+                  <h2 className="ngi-section-heading leading-tight">Thank you, {data.name?.split(" ")[0] || "friend"}.</h2>
+                  <p className="mt-6 ngi-page-body max-w-lg">
                     A senior designer from the studio will be in touch within one working day to schedule your ninety minutes.
                   </p>
                   <p className="mt-4 text-sm text-[#1E1E1E]/60">In the meantime — perhaps a short read from the journal?</p>

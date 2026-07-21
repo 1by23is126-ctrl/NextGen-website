@@ -17,13 +17,13 @@ export default function BlogPage() {
 
   return (
     <div data-testid="blog-page" className="pt-28">
-      <section className="ngi-container py-16 md:py-24">
+      <section className="ngi-page-hero">
         <FadeIn>
           <div className="ngi-overline mb-6"><span className="ngi-rule" />Journal</div>
-          <h1 className="font-serif text-5xl md:text-7xl font-light tracking-tighter leading-[1.02] max-w-4xl">
+          <h1 className="ngi-page-title max-w-4xl">
             Field notes, material diaries, <em className="text-[#707070]">letters home</em>.
           </h1>
-          <p className="mt-8 max-w-2xl text-base md:text-lg leading-relaxed text-[#1E1E1E]/80">
+          <p className="mt-8 max-w-2xl ngi-page-body">
             Long-form writing from the studio. About materials, the practice, the homes we have built and the ones we still want to.
           </p>
         </FadeIn>
@@ -36,8 +36,8 @@ export default function BlogPage() {
               key={c}
               onClick={() => setCategory(c)}
               data-testid={`blog-filter-${c}`}
-              className={`text-[11px] tracking-[0.22em] uppercase py-3 px-5 transition-colors ${
-                category === c ? "bg-[#171717] text-white" : "text-[#1E1E1E]/70 hover:text-[#C8A46A]"
+              className={`ngi-button-secondary px-5 py-3 ${
+                category === c ? "bg-[#171717] text-white border-[#171717] hover:bg-[#171717] hover:text-white" : ""
               }`}
             >
               {c}
@@ -49,12 +49,12 @@ export default function BlogPage() {
           {posts.map((p, i) => (
             <FadeIn key={p.id} delay={(i % 2) * 0.06} className={i % 2 === 1 ? "md:mt-28" : ""}>
               <Link to={`/journal/${p.slug}`} className="group block" data-testid={`blog-card-${p.slug}`}>
-                <div className="aspect-[5/4] ngi-image-zoom mb-6">
+                <div className="aspect-[5/4] ngi-image-zoom ngi-panel overflow-hidden mb-6">
                   <img src={p.cover_image} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
                 </div>
-                <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070] mb-3">{p.category} · {p.read_time} min read</div>
+                <div className="ngi-page-label mb-3">{p.category} · {p.read_time} min read</div>
                 <h2 className="font-serif text-3xl md:text-4xl font-light leading-tight group-hover:text-[#707070] transition-colors">{p.title}</h2>
-                <p className="mt-4 text-[#1E1E1E]/75 leading-relaxed">{p.excerpt}</p>
+                <p className="mt-4 ngi-page-body">{p.excerpt}</p>
                 <div className="mt-6 inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-[#171717] ngi-link-underline">
                   Read article <ArrowUpRight size={14} />
                 </div>

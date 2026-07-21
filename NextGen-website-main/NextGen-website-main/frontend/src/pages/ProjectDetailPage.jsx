@@ -66,7 +66,7 @@ export default function ProjectDetailPage() {
           { l: "Duration", v: project.duration },
         ].map((it, i) => (
           <FadeIn key={i} delay={i * 0.05}>
-            <div className="text-[10px] tracking-[0.22em] uppercase text-[#707070]">{it.l}</div>
+            <div className="ngi-page-label">{it.l}</div>
             <div className="font-serif text-2xl md:text-3xl mt-2">{it.v}</div>
           </FadeIn>
         ))}
@@ -75,10 +75,10 @@ export default function ProjectDetailPage() {
       <section data-testid="project-overview" className="ngi-section ngi-container grid grid-cols-1 md:grid-cols-12 gap-10">
         <FadeIn className="md:col-span-5">
           <div className="ngi-overline mb-4"><span className="ngi-rule" />Overview</div>
-          <h2 className="font-serif text-3xl md:text-4xl font-light leading-tight">A short note on the project.</h2>
+          <h2 className="ngi-section-heading">A short note on the project.</h2>
         </FadeIn>
         <FadeIn className="md:col-span-6 md:col-start-7" delay={0.1}>
-          <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/85">{project.overview}</p>
+          <p className="ngi-page-body">{project.overview}</p>
         </FadeIn>
       </section>
 
@@ -96,10 +96,10 @@ export default function ProjectDetailPage() {
         <div className="ngi-container ngi-section grid grid-cols-1 md:grid-cols-12 gap-10">
           <FadeIn className="md:col-span-5">
             <div className="ngi-overline mb-4"><span className="ngi-rule" />The Challenge</div>
-            <h2 className="font-serif text-3xl md:text-4xl font-light leading-tight">What we set out to solve.</h2>
+            <h2 className="ngi-section-heading">What we set out to solve.</h2>
           </FadeIn>
           <FadeIn className="md:col-span-6 md:col-start-7" delay={0.1}>
-            <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/85">{project.challenge}</p>
+            <p className="ngi-page-body">{project.challenge}</p>
           </FadeIn>
         </div>
       </section>
@@ -107,10 +107,10 @@ export default function ProjectDetailPage() {
       <section data-testid="project-concept" className="ngi-section ngi-container grid grid-cols-1 md:grid-cols-12 gap-10">
         <FadeIn className="md:col-span-5">
           <div className="ngi-overline mb-4"><span className="ngi-rule" />Design Concept</div>
-          <h2 className="font-serif text-3xl md:text-4xl font-light leading-tight">The one idea behind it all.</h2>
+          <h2 className="ngi-section-heading">The one idea behind it all.</h2>
         </FadeIn>
         <FadeIn className="md:col-span-6 md:col-start-7" delay={0.1}>
-          <p className="text-base md:text-lg leading-relaxed text-[#1E1E1E]/85">{project.concept}</p>
+          <p className="ngi-page-body">{project.concept}</p>
           {project.materials?.length > 0 && (
             <div className="mt-10 border-t border-[#171717]/15 pt-8" data-testid="project-materials">
               <div className="ngi-overline mb-5"><span className="ngi-rule" />Material palette</div>
@@ -195,7 +195,7 @@ export default function ProjectDetailPage() {
       )}
 
       <section className="ngi-section ngi-container">
-        <button onClick={() => navigate("/portfolio")} className="text-[11px] tracking-[0.22em] uppercase ngi-link-underline">← All projects</button>
+        <button onClick={() => navigate("/portfolio")} className="ngi-button-secondary">← All projects</button>
       </section>
     </div>
   );
